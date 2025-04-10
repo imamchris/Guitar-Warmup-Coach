@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Scale Viewer - Horizontal Layout</title>
+    <style>
+        .svg-container {
+            width: 800px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guitar Scale Viewer - Horizontal Layout</h1>
+    <label for="scaleSelector">Select a Scale:</label>
+    <select id="scaleSelector">
+        <option value="gMinorPentatonic">G Minor Pentatonic</option>
+        <option value="eMajorPentatonic">E Major Pentatonic</option>
+        <option value="bBlues">B Blues Scale</option>
+        <option value="aNaturalMinor">A Natural Minor Scale</option>
+    </select>
+    <svg id="scaleDiagram" class="svg-container" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"></svg>
+
+    <script>
+        const strings = ["e", "B", "G", "D", "A", "E"];
+        const scales = {
+            gMinorPentatonic: {
+            root: "G",
+            positions: [
+                [3, 6], // e
+                [3, 6], // B
+                [3, 5], // G
+                [3, 5], // D
+                [3, 5], // A
+                [3, 6]  // E
+            ]
+            },
+            eMajorPentatonic: {
+            root: "E",
+            positions: [
+                [0, 2, 4], 
+                [0, 2, 4], 
+                [1, 2, 4], 
+                [1, 2, 4], 
+                [0, 2, 4], 
+                [0, 2, 4]  
+            ]
+            },
+            bBlues: {
+            root: "B",
+            positions: [
+                [7, 10], 
+                [7, 10], 
+                [7, 9, 10],  
+                [7, 9],  
+                [7, 8, 9], 
+                [7, 10] 
+            ]
+            },
+            aNaturalMinor: {
+            root: "A",
+            positions: [
+                [5, 7, 8], 
+                [5, 7, 8],    
+                [4, 5, 7],    
+                [5, 7],    
+                [5, 7, 8], 
+                [5, 7, 8]  
+            ]
+            }
+        };
+
+        function drawFretboard() {
+            const svg = document.getElementById("scaleDiagram");
+            svg.innerHTML = ""; // Clear existing content
+
+            const numFrets = 12;
+            const fretWidth = 40;
+            const stringSpacing = 30;
+
+            // Draw frets
+            for (let i = 0; i <= numFrets; i++) {
+                const x = 50 + i * fretWidth;
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", x);
+                line.setAttribute("y1", 50);
+                line.setAttribute("x2", x);
+                line.setAttribute("y2", 50 + (strings.length - 1) * stringSpacing);
+                line.setAttribute("stroke", i === 0 ? "black" : "gray");
+                line.setAttribute("stroke-width", i === 0 ? "5" : "3");
+                svg.appendChild(line);
+
+                if (i > 0) {
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", 40);
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("fill", "black");
+                    text.setAttribute("font-size", "12");
+                    text.textContent = i;
+                    svg.appendChild(text);
+                }
+            }
+
+            // Draw strings
+            for (let i = 0; i < strings.length; i++) {
+                const y = 50 + i * stringSpacing;
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", 50);
+                line.setAttribute("y1", y);
+                line.setAttribute("x2", 50 + numFrets * fretWidth);
+                line.setAttribute("y2", y);
+                line.setAttribute("stroke", "black");
+                line.setAttribute("stroke-width", "2");
+                svg.appendChild(line);
+
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", 20);
+                text.setAttribute("y", y + 5);
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("fill", "black");
+                text.setAttribute("font-size", "12");
+                text.textContent = strings[i];
+                svg.appendChild(text);
+            }
+        }
+
+        function drawScale(scaleKey) {
+            const svg = document.getElementById("scaleDiagram");
+            const scale = scales[scaleKey];
+
+            for (let stringIndex = 0; stringIndex < strings.length; stringIndex++) {
+                const stringPositions = scale.positions[stringIndex];
+                for (let fret of stringPositions) {
+                    const x = 50 + fret * 40;
+                    const y = 50 + stringIndex * 30;
+
+                    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    circle.setAttribute("cx", x);
+                    circle.setAttribute("cy", y);
+                    circle.setAttribute("r", "10");
+                    circle.setAttribute("fill", "black");
+                    svg.appendChild(circle);
+
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", y + 5);
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("fill", "white");
+                    text.setAttribute("font-size", "10");
+                    text.textContent = fret;
+                    svg.appendChild(text);
+                }
+            }
+        }
+
+        document.getElementById("scaleSelector").addEventListener("change", (event) => {
+            drawFretboard();
+            drawScale(event.target.value);
+        });
+
+        // Initial render
+        drawFretboard();
+        drawScale("gMinorPentatonic");
+    </script>
+</body>
+</html>

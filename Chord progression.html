@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chord Progression Viewer</title>
+    <style>
+        .chord-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        .chord-cell, .slash {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .slash {
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Guitar Chord Progression</h2>
+    <label for="progressionInput">Enter a chord progression (e.g., D, A, B, B, C, E):</label>
+    <input type="text" id="progressionInput" placeholder="D, A, B, B, C, E">
+    <button onclick="displayChordProgression()">Show Progression</button>
+
+    <div id="progressionContainer"></div>
+
+    <script>
+        function displayChordProgression() {
+            const input = document.getElementById("progressionInput").value;
+            const chords = input.split(",").map(chord => chord.trim());
+            const container = document.getElementById("progressionContainer");
+
+            container.innerHTML = "";
+
+            const row1 = document.createElement("div");
+            row1.classList.add("chord-row");
+
+            const row2 = document.createElement("div");
+            row2.classList.add("chord-row");
+
+            for (let i = 0; i < chords.length; i++) {
+                const chordCell = document.createElement("div");
+                chordCell.classList.add("chord-cell");
+                chordCell.textContent = chords[i];
+
+                if (i < 3) {
+                    row1.appendChild(chordCell);
+                    if (i < 2) { // Add slash only if it's not the last chord in the row
+                        const slash = document.createElement("div");
+                        slash.classList.add("slash");
+                        slash.textContent = "/";
+                        row1.appendChild(slash);
+                    }
+                } else {
+                    row2.appendChild(chordCell);
+                    if (i < chords.length - 1) { // Add slash only if it's not the last chord
+                        const slash = document.createElement("div");
+                        slash.classList.add("slash");
+                        slash.textContent = "/";
+                        row2.appendChild(slash);
+                    }
+                }
+            }
+
+            container.appendChild(row1);
+            container.appendChild(row2);
+        }
+    </script>
+</body>
+</html>
