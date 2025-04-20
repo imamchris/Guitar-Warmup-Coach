@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chord Chart Display</title>
+</head>
+<body>
+    <h1>Guitar Chord Chart</h1>
+    <form method="POST">
+        <label for="chord">Enter Chord (e.g. C, G, E):</label>
+        <input type="text" name="chord" id="chord">
+        <button type="submit">Show</button>
+    </form>
+
+    {% if chord %}
+        <h2>{{ chord }} Chord:</h2>
+        <div>{{ chord_svg|safe }}</div>
+    {% elif error %}
+        <p style="color: red;">Error: {{ error }}</p>
+    {% endif %}
+</body>
+</html>

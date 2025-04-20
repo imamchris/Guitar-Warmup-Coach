@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chord Chart</title>
+    <script src="https://unpkg.com/vexflow/releases/vexflow-min.js"></script>
+    <style>
+        .svg-container {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generate a Chord Chart</h1>
+    <form id="chordForm" onsubmit="return fetchChordData()">
+        <label for="chord">Enter Chord Name:</label>
+        <input type="text" id="chord" name="chord" required>
+        <button type="submit">Generate</button>
+    </form>
+
+    <div id="chordDiagram" class="svg-container"></div>
+
+    <script>
+        async function fetchChordData() {
+            const chordName = document.getElementById("chord").value.trim();
+            if (!chordName) {
+                alert("Please enter a chord name.");
+                return false;
+            }
+
+            const response = await fetch(`/generate_chord_chart?chord=${chordName}`);
+            if (response.ok) {
+                const data = await response.json();
+                drawChord(data.positions, data.fingers);
+            } else {
+                alert("Error: " + (await response.text()));
+            }
+            return false; // Prevent form submission
+        }
+
+        function drawChord(positions, fingers) {
+            const VF = Vex.Flow;
+            const div = document.getElementById("chordDiagram");
+            div.innerHTML = ""; // Clear previous diagram
+
+            const renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+            renderer.resize(200, 300);
+            const context = renderer.getContext();
+            const stave = new VF.Stave(10, 40, 180);
+            stave.addClef("treble").setContext(context).draw();
+
+            // Draw chord positions
+            positions.forEach((fret, string) => {
+                if (fret > 0) {
+                    const x = 20 + string * 30;
+                    const y = 40 + fret * 20;
+                    context.beginPath();
+                    context.arc(x, y, 10, 0, 2 * Math.PI);
+                    context.fillStyle = "black";
+                    context.fill();
+                }
+            });
+        }
+
+        function updateChord() {
+            const selectedChord = document.getElementById("chordSelect").value;
+            const { positions, fingers } = chordPositions[selectedChord];
+            const svg = document.getElementById("chordDiagram");
+
+            // Remove previous elements
+            svg.querySelectorAll("circle, text").forEach(el => el.remove());
+
+            // Draw open/closed string indicators
+            for (let i = 0; i < positions.length; i++) {
+                let x = 40 + (i * 30); // Position along string
+                let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", x);
+                text.setAttribute("y", 20); // Above the nut
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("font-size", "12");
+                text.setAttribute("fill", "black");
+
+                if (positions[i] === 0) {
+                    text.textContent = "O"; // Open string
+                } else if (positions[i] === -1) {
+                    text.textContent = "X"; // Muted string
+                } else {
+                    text.textContent = ""; // Played string
+                }
+
+                svg.appendChild(text);
+            }
+
+            // Draw new chord positions and finger numbers
+            for (let i = 0; i < positions.length; i++) {
+                if (positions[i] > 0) {
+                    let x = 40 + (i * 30); // Position along string
+                    let y = 30 + (positions[i] * 32); // Position on fret
+
+                    // Draw finger dot
+                    let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    circle.setAttribute("cx", x);
+                    circle.setAttribute("cy", y);
+                    circle.setAttribute("r", "10");
+                    circle.setAttribute("fill", "black");
+                    svg.appendChild(circle);
+
+                    // Draw finger number
+                    let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", y + 5); // Slightly below the center of the circle
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("fill", "white");
+                    text.setAttribute("font-size", "10");
+                    text.textContent = fingers[i];
+                    svg.appendChild(text);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
