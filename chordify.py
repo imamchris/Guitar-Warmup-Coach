@@ -64,3 +64,62 @@ class ChordLibrary:
         # Close SVG
         svg.append('</svg>')
         return "\n".join(svg)
+    
+class ScaleLibrary:
+    def __init__(self):
+        # Define scale positions (strings ordered EADGBE, frets for each string)
+        self.scales = {
+            "G Minor Pentatonic": {
+                "positions": [
+                    [3, 6],  # Low E string
+                    [3, 5],  # A string
+                    [3, 5],  # D string
+                    [3, 5],  # G string
+                    [3, 5],  # B string
+                    [3, 6],  # High E string
+                ]
+            },
+        }
+
+    def get_scale(self, scale_name):
+        """Retrieve scale positions."""
+        if scale_name not in self.scales:
+            raise ValueError(f"Scale '{scale_name}' not found in library.")
+        return self.scales[scale_name]
+
+    def draw_scale(self, positions):
+        """Generate an SVG representation of the scale diagram."""
+        # Start SVG
+        svg = [
+            '<svg width="500" height="250" xmlns="http://www.w3.org/2000/svg">',
+            '<!-- Guitar strings -->',
+        ]
+
+        # Draw strings
+        for string_index in range(6):  # 6 strings
+            y = 30 + (string_index * 30)
+            svg.append(f'<line x1="50" y1="{y}" x2="470" y2="{y}" stroke="black" stroke-width="2"/>')
+
+        # Draw frets
+        for fret_index in range(1, 13):  # 12 frets
+            x = 50 + (fret_index * 35)
+            svg.append(f'<line x1="{x}" y1="30" x2="{x}" y2="180" stroke="black" stroke-width="1"/>')
+
+        # Add fret numbers
+        for fret_index in range(1, 13):  # 12 frets
+            x = 50 + (fret_index * 35)
+            svg.append(f'<text x="{x - 10}" y="20" text-anchor="middle" font-size="12" fill="black">{fret_index}</text>')
+
+        # Draw scale positions
+        for string_index, frets in enumerate(positions):
+            y = 30 + (string_index * 30)
+            for fret in frets:
+                x = 50 + (fret * 35)
+                # Draw circle for scale position
+                svg.append(f'<circle cx="{x}" cy="{y}" r="10" fill="black"/>')
+                # Add finger number inside the circle (optional, using "1" as a placeholder)
+                svg.append(f'<text x="{x}" y="{y + 4}" text-anchor="middle" font-size="10" fill="white">1</text>')
+
+        # Close SVG
+        svg.append('</svg>')
+        return "\n".join(svg)

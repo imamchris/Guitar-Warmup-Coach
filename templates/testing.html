@@ -1,21 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chord Chart Display</title>
+    <title>Guitar Warmup Coach</title>
 </head>
 <body>
-    <h1>Guitar Chord Chart</h1>
-    <form method="POST">
-        <label for="chord">Enter Chord (e.g. C, G, E):</label>
-        <input type="text" name="chord" id="chord">
-        <button type="submit">Show</button>
-    </form>
-
-    {% if chord %}
-        <h2>{{ chord }} Chord:</h2>
-        <div>{{ chord_svg|safe }}</div>
-    {% elif error %}
-        <p style="color: red;">Error: {{ error }}</p>
-    {% endif %}
+    <h1>Welcome to Guitar Warmup Coach</h1>
+    <p>Select an option below:</p>
+    <ul>
+        <li><a href="/generate_chord_chart_page">Generate a Chord Chart</a></li>
+        <li><a href="/generate_scale_page">Generate a Scale Diagram</a></li>
+    </ul>
 </body>
 </html>
