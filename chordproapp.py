@@ -1,6 +1,6 @@
 # app.py
 from flask import Flask, render_template, request, jsonify
-from chordify import draw_chord, ChordLibrary
+from chordify import ChordLibrary
 
 app = Flask(__name__)
 chord_library = ChordLibrary()  # Initialize the chord library
@@ -13,7 +13,8 @@ def index():
             # Fetch chord positions and fingerings from the library
             chord_data = chord_library.get_chord(chord_name)
             positions = chord_data["positions"]
-            svg = draw_chord(positions)  # Generate the chord diagram as SVG
+            fingers = chord_data["fingers"]
+            svg = chord_library.draw_chord(positions, fingers)  # Generate the chord diagram as SVG
             return render_template('testing.html', chord=chord_name, chord_svg=svg)
         except ValueError as e:
             return render_template('testing.html', chord=None, error=str(e))
@@ -33,7 +34,7 @@ def generate_chord_chart():
         chord_data = chord_library.get_chord(chord_name)
         positions = chord_data["positions"]
         fingers = chord_data["fingers"]
-        svg = draw_chord(positions)  # Generate the chord diagram as SVG
+        svg = chord_library.draw_chord(positions, fingers)  # Generate the chord diagram as SVG
         return jsonify({"positions": positions, "fingers": fingers, "svg": svg})
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
