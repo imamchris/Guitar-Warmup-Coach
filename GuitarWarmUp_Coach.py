@@ -8,14 +8,14 @@ scale_library = ScaleLibrary()  # Initialize the scale library
 @app.route('/')
 def index():
     # Render the index page (testing.html)
-    return render_template('testing.html')
+    return render_template('index.html')
 
-@app.route('/generate_chord_chart_page', methods=['GET', 'POST'])
-def generate_chord_chart_page():
+@app.route('/chord_chart', methods=['GET', 'POST'])
+def chord_chart():
     if request.method == 'POST':
         chord_name = request.form.get('chord')
         if not chord_name:
-            return render_template('generate_chord_chart.html', error="Please enter a chord name.")
+            return render_template('chord_chart.html', error="Please enter a chord name.")
 
         try:
             # Fetch chord positions and fingerings from the library
@@ -23,17 +23,17 @@ def generate_chord_chart_page():
             positions = chord_data["positions"]
             fingers = chord_data["fingers"]
             svg = chord_library.draw_chord(positions, fingers)  # Generate the chord diagram as SVG
-            return render_template('generate_chord_chart.html', chord=chord_name, chord_svg=svg)
+            return render_template('chord_chart.html', chord=chord_name, chord_svg=svg)
         except ValueError as e:
-            return render_template('generate_chord_chart.html', error=str(e))
+            return render_template('chord_chart.html', error=str(e))
         except Exception as e:
-            return render_template('generate_chord_chart.html', error="An unexpected error occurred.")
+            return render_template('chord_chart.html', error="An unexpected error occurred.")
     else:
         # Render the chord chart generation page
-        return render_template('generate_chord_chart.html')
+        return render_template('chord_chart.html')
 
-@app.route('/generate_scale_page', methods=['GET', 'POST'])
-def generate_scale_page():
+@app.route('/scale_diagram', methods=['GET', 'POST'])
+def scale_diagram():
     if request.method == 'POST':
         scale_name = request.form.get('scale')
         if not scale_name:
