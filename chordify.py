@@ -64,7 +64,28 @@ class ChordLibrary:
         # Close SVG
         svg.append('</svg>')
         return "\n".join(svg)
-    
+
+    def create_chord_progression(self, chord_names):
+        """
+        Create a chord progression from a list of chord names.
+
+        Args:
+            chord_names (list): A list of chord names (e.g., ["G", "C", "D"]).
+
+        Returns:
+            list: A list of dictionaries containing chord data (positions and fingerings).
+        """
+        progression = []
+        for chord_name in chord_names:
+            try:
+                chord_data = self.get_chord(chord_name)
+                progression.append({"name": chord_name, "positions": chord_data["positions"], "fingers": chord_data["fingers"]})
+            except ValueError as e:
+                raise ValueError(f"Error in chord progression: {e}")
+        return progression
+
+
+
 class ScaleLibrary:
     def __init__(self):
         # Define scale positions (strings ordered EADGBE, frets for each string)
@@ -105,9 +126,12 @@ class ScaleLibrary:
             x = 50 + (fret_index * 35)
             svg.append(f'<line x1="{x}" y1="30" x2="{x}" y2="180" stroke="black" stroke-width="1"/>')
 
+        # Draw nut (just before the first fret)
+        svg.append('<line x1="50" y1="30" x2="50" y2="180" stroke="black" stroke-width="3"/>')
+
         # Add fret numbers
         for fret_index in range(1, 13):  # 12 frets
-            x = 50 + (fret_index * 35)
+            x = 42 + (fret_index * 35)
             svg.append(f'<text x="{x - 10}" y="20" text-anchor="middle" font-size="12" fill="black">{fret_index}</text>')
 
         # Draw scale positions
@@ -117,8 +141,8 @@ class ScaleLibrary:
                 x = 50 + (fret * 35)
                 # Draw circle for scale position
                 svg.append(f'<circle cx="{x}" cy="{y}" r="10" fill="black"/>')
-                # Add finger number inside the circle (optional, using "1" as a placeholder)
-                svg.append(f'<text x="{x}" y="{y + 4}" text-anchor="middle" font-size="10" fill="white">1</text>')
+                # Add fret number inside the circle
+                svg.append(f'<text x="{x}" y="{y + 4}" text-anchor="middle" font-size="10" fill="white">{fret}</text>')
 
         # Close SVG
         svg.append('</svg>')
