@@ -35,7 +35,7 @@ def chord_chart():
 @app.route('/scale_diagram', methods=['GET', 'POST'])
 def scale_diagram():
     if request.method == 'POST':
-        scale_name = request.form.get('scale')
+        scale_name = request.form.get('scale')  # Fixed missing scale_name assignment
         if not scale_name:
             return render_template('scale_TAB.html', error="Please enter a scale name.")
 
@@ -70,6 +70,48 @@ def chord_progression():
     else:
         # Render the chord progression page
         return render_template('chord_progression.html')
+
+@app.route('/daily_exercise', methods=['GET', 'POST'])
+def daily_exercise():
+    if request.method == 'POST':
+        # Get user input for the exercise
+        progression_input = request.form.get('progression')
+        scale_name = request.form.get('scale')
+
+        if not progression_input or not scale_name:
+            return render_template('daily_exercise.html', error="Please enter a chord progression and a scale.")
+
+        try:
+            # Generate chord progression
+            chord_names = [chord.strip() for chord in progression_input.split(",")]
+            progression = chord_library.create_chord_progression(chord_names)
+
+            # Generate scale diagram
+            scale_data = scale_library.get_scale(scale_name)
+            scale_positions = scale_data["positions"]
+            scale_svg = scale_library.draw_scale(scale_positions)
+
+            # Generate individual chord diagrams, removing duplicates
+            chord_svgs = []
+            seen_chords = set()
+            for chord in progression:
+                if chord["name"] not in seen_chords:
+                    svg = chord_library.draw_chord(chord["positions"], chord["fingers"])
+                    chord_svgs.append({"name": chord["name"], "svg": svg})
+                    seen_chords.add(chord["name"])  # Track unique chord names
+
+            return render_template(
+                'daily_exercise.html',
+                progression=progression,
+                scale_name=scale_name,
+                scale_svg=scale_svg,
+                chord_svgs=chord_svgs  # Pass unique chord diagrams
+            )
+        except ValueError as e:
+            return render_template('daily_exercise.html', error=str(e))
+    else:
+        # Render the exercise page
+        return render_template('daily_exercise.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

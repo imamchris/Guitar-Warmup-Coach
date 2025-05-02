@@ -6,8 +6,9 @@
     <title>Scale Diagram</title>
     <style>
         .svg-container {
+            margin: 20px auto;
             width: 400px;
-            height: 200px;
+            height: auto;
         }
     </style>
 </head>
@@ -29,5 +30,7 @@
             {{ scale_svg|safe }}
         </div>
     {% endif %}
+
+    <a href="/">Back to Home</a>
 </body>
 </html>

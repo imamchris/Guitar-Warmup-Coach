@@ -1,6 +1,3 @@
-import matplotlib.pyplot as plt
-import os
-
 class ChordLibrary:
     def __init__(self):
         # Define chord positions and fingerings NOTE: Strings ordered EADGBE, Notes (including muted) are indicated in positions
@@ -85,7 +82,6 @@ class ChordLibrary:
         return progression
 
 
-
 class ScaleLibrary:
     def __init__(self):
         # Define scale positions (strings ordered EADGBE, frets for each string)
@@ -147,3 +143,10 @@ class ScaleLibrary:
         # Close SVG
         svg.append('</svg>')
         return "\n".join(svg)
+
+
+# Goals for the code:
+# 1. Make a simple dashboard to display a basic interface to access 'daily exercises' 
+# 2. Find a a way to combine the chord charts, scales, and progressions together in one big excercise
+# 3. 
+# 4.
