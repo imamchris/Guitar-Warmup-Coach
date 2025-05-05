@@ -148,5 +148,5 @@ class ScaleLibrary:
 # Goals for the code:
 # 1. Make a simple dashboard to display a basic interface to access 'daily exercises' 
 # 2. Find a a way to combine the chord charts, scales, and progressions together in one big excercise
-# 3. 
-# 4.
+# 3. Create a login system to save user data and progress
+# 4. Tailor the exercises to the user based on their progress and data

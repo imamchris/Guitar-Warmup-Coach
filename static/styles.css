@@ -1,0 +1,134 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: center;
+}
+
+h1 {
+    font-size: 36px;
+    margin-top: 20px;
+    color: #007BFF;
+}
+
+h2 {
+    font-size: 28px;
+    margin-top: 20px;
+    color: #0056b3;
+}
+
+p {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+/* Navigation Menu */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+ul li a {
+    text-decoration: none;
+    font-size: 18px;
+    color: #007BFF;
+    transition: color 0.3s;
+}
+
+ul li a:hover {
+    color: #0056b3;
+}
+
+/* Buttons */
+button {
+    font-size: 16px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Forms */
+form {
+    margin: 20px auto;
+    width: 50%;
+    text-align: left;
+}
+
+label {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"] {
+    font-size: 16px;
+    padding: 8px;
+    width: 100%;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type="text"]:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+/* Error Messages */
+.error {
+    color: red;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+/* SVG Containers */
+.svg-container {
+    margin: 20px auto;
+    width: 400px;
+    height: auto;
+}
+
+/* Grid Layout for Chord Charts */
+.chord-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    gap: 20px;
+    justify-items: center;
+    margin: 20px auto;
+    max-width: 900px;
+}
+
+.chord-grid div {
+    text-align: center;
+}
+
+/* Footer Link */
+a {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #007BFF;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #0056b3;
+}
