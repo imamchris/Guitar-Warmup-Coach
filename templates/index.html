@@ -1,17 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guitar Warmup Coach</title>
-    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        /* Inline styles for a more neutral and professional look */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-top: 40px;
+            color: #444;
+        }
+
+        p {
+            font-size: 18px;
+            margin: 15px 0;
+            color: #555;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 40px auto;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        ul li {
+            display: inline-block;
+        }
+
+        ul li a {
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            background: #007BFF;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        ul li a:hover {
+            background: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer a {
+            color: #007BFF;
+            text-decoration: underline;
+        }
+
+        .footer a:hover {
+            color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Guitar Warmup Coach</h1>
-    <p>Select an option below:</p>
+    <h1> Guitar Warmup Coach </h1>
+    <p>Your personalized guitar practice companion!</p>
     <ul>
-        <li><a href="/chord_chart">Generate a Chord Chart</a></li>
-        <li><a href="/scale_diagram">Generate a Scale Diagram</a></li>
-        <li><a href="/chord_progression">Generate a Chord Progression</a></li>
+        <li><a href="/chord_chart">Chord Chart</a></li>
+        <li><a href="/scale_diagram">Scale Diagram</a></li>
+        <li><a href="/chord_progression">Chord Progression</a></li>
         <li><a href="/daily_exercise">Daily Exercise</a></li>
     </ul>
+    <div class="footer">
+        <p>Made with ❤️ for guitar enthusiasts. <a href="https://github.com/">Visit our GitHub</a></p>
+    </div>
 </body>
 </html>
