@@ -6,85 +6,140 @@
     <title>Guitar Warmup Coach</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <style>
-        /* Inline styles for a more neutral and professional look */
+        /* General Styles */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background: #f4f4f4;
             color: #333;
+        }
+
+        header {
+            background: #007BFF;
+            color: white;
+            padding: 20px;
             text-align: center;
+            position: relative;
         }
 
-        h1 {
+        header h1 {
+            margin: 0;
             font-size: 36px;
-            margin-top: 40px;
-            color: #444;
         }
 
-        p {
-            font-size: 18px;
-            margin: 15px 0;
-            color: #555;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 40px auto;
+        header .nav-links {
+            position: absolute;
+            top: 20px;
+            right: 20px;
             display: flex;
-            justify-content: center;
             gap: 15px;
         }
 
-        ul li {
-            display: inline-block;
-        }
-
-        ul li a {
+        header .nav-links a {
+            color: white;
             text-decoration: none;
-            font-size: 18px;
-            color: #fff;
-            background: #007BFF;
-            padding: 10px 20px;
+            font-size: 16px;
+            padding: 5px 10px;
+            border: 1px solid white;
             border-radius: 5px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease;
         }
 
-        ul li a:hover {
-            background: #0056b3;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .footer {
-            margin-top: 40px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .footer a {
+        header .nav-links a:hover {
+            background: white;
             color: #007BFF;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .section img {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #007BFF;
+            color: white;
+            margin-top: 20px;
+        }
+
+        footer a {
+            color: white;
             text-decoration: underline;
         }
 
-        .footer a:hover {
-            color: #0056b3;
+        footer a:hover {
+            color: #ffcc00;
         }
     </style>
 </head>
 <body>
-    <h1> Guitar Warmup Coach </h1>
-    <p>Your personalized guitar practice companion!</p>
-    <ul>
-        <li><a href="/chord_chart">Chord Chart</a></li>
-        <li><a href="/scale_diagram">Scale Diagram</a></li>
-        <li><a href="/chord_progression">Chord Progression</a></li>
-        <li><a href="/daily_exercise">Daily Exercise</a></li>
-    </ul>
-    <div class="footer">
-        <p>Made with ❤️ for guitar enthusiasts. <a href="https://github.com/">Visit our GitHub</a></p>
+    <header>
+        <h1>Guitar Warmup Coach</h1>
+        <div class="nav-links">
+            <a href="/about">About</a>
+            <a href="/account">Account</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="section">
+            <a href="/daily_exercise" class="button-link">
+                <h2>Daily Exercise</h2>
+            </a>
+            <img src="/static/images/daily_exercise.jpg" alt="Daily Exercise">
+        </div>
+
+        <div class="section">
+            <a href="/scale_diagram" class="button-link">
+                <h2>Scales and Arpeggios</h2>
+            </a>
+            <img src="/static/images/scales_arpeggios.jpg" alt="Scales and Arpeggios">
+        </div>
+
+        <div class="section">
+            <a href="/chord_progression" class="button-link">
+                <h2>Chord Practice</h2>
+            </a>
+            <img src="/static/images/chord_practice.jpg" alt="Chord Practice">
+        </div>
+        
+        <div class="section">
+            <a href="/tutorial" class="button-link">
+                <h2>Tutorial</h2>
+            </a>
+            <img src="/static/images/Tutorial.jpg" alt="Tutorial">
+        </div>
     </div>
+
+    <footer>
+        <p> ༼ つ ◕_◕ ༽つ 🎸 </p>
+    </footer>
 </body>
+
 </html>

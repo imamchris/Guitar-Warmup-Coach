@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chord Progression Viewer</title>
+    <title>Chord Progression and Charts</title>
 
     <style>
         body {
@@ -54,6 +54,19 @@
             margin: 0 10px;
             color: #555;
         }
+        .chord-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns */
+            gap: 20px;
+            justify-items: center;
+            margin: 20px auto;
+            max-width: 900px;
+        }
+        .svg-container {
+            margin: 10px auto;
+            width: 200px;
+            height: auto;
+        }
         .error {
             color: red;
             font-size: 18px;
@@ -74,7 +87,7 @@
 </head>
 
 <body>
-    <h1>Chord Progression Viewer</h1>
+    <h1>Chord Progression and Charts</h1>
     <form method="POST" action="/chord_progression">
         <label for="progression">Enter a chord progression (e.g., G, C, D, Em):</label>
         <input type="text" id="progression" name="progression" required>
@@ -93,6 +106,18 @@
                 {% if not loop.last %}
                     <span class="slash">/</span>
                 {% endif %}
+            {% endfor %}
+        </div>
+
+        <h2>Chord Charts:</h2>
+        <div class="chord-grid">
+            {% for chord in chord_svgs %}
+                <div>
+                    <h3>{{ chord.name }}</h3>
+                    <div class="svg-container">
+                        {{ chord.svg|safe }}
+                    </div>
+                </div>
             {% endfor %}
         </div>
     {% endif %}

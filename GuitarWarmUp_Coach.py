@@ -10,28 +10,6 @@ def index():
     # Render the index page (index.html)
     return render_template('index.html')
 
-@app.route('/chord_chart', methods=['GET', 'POST'])
-def chord_chart():
-    if request.method == 'POST':
-        chord_name = request.form.get('chord')
-        if not chord_name:
-            return render_template('chord_chart.html', error="Please enter a chord name.")
-
-        try:
-            # Fetch chord positions and fingerings from the library
-            chord_data = chord_library.get_chord(chord_name)
-            positions = chord_data["positions"]
-            fingers = chord_data["fingers"]
-            svg = chord_library.draw_chord(positions, fingers)  # Generate the chord diagram as SVG
-            return render_template('chord_chart.html', chord=chord_name, chord_svg=svg)
-        except ValueError as e:
-            return render_template('chord_chart.html', error=str(e))
-        except Exception as e:
-            return render_template('chord_chart.html', error="An unexpected error occurred.")
-    else:
-        # Render the chord chart generation page
-        return render_template('chord_chart.html')
-
 @app.route('/scale_diagram', methods=['GET', 'POST'])
 def scale_diagram():
     if request.method == 'POST':
@@ -64,7 +42,18 @@ def chord_progression():
             # Parse the input into a list of chord names
             chord_names = [chord.strip() for chord in progression_input.split(",")]
             progression = chord_library.create_chord_progression(chord_names)
-            return render_template('chord_progression.html', progression=progression)
+
+            # Generate chord charts for each chord in the progression
+            chord_svgs = []
+            for chord in progression:
+                svg = chord_library.draw_chord(chord["positions"], chord["fingers"])
+                chord_svgs.append({"name": chord["name"], "svg": svg})
+
+            return render_template(
+                'chord_progression.html',
+                progression=progression,
+                chord_svgs=chord_svgs
+            )
         except ValueError as e:
             return render_template('chord_progression.html', error=str(e))
     else:

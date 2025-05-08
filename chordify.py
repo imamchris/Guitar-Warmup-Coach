@@ -149,4 +149,5 @@ class ScaleLibrary:
 # 1. Make a simple dashboard to display a basic interface to access 'daily exercises' 
 # 2. Find a a way to combine the chord charts, scales, and progressions together in one big excercise
 # 3. Create a login system to save user data and progress
-# 4. Tailor the exercises to the user based on their progress and data
+# 4. Create a tuorial on how to read TAB, Chord Charts, and Chord Progressions
+# 5. Tailor the exercises to the user based on their progress and data
