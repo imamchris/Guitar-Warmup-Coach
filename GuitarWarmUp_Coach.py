@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from chordify import ChordLibrary, ScaleLibrary
+import random  # Import the random module
 
 app = Flask(__name__)
 chord_library = ChordLibrary()  # Initialize the chord library
@@ -60,47 +61,40 @@ def chord_progression():
         # Render the chord progression page
         return render_template('chord_progression.html')
 
-@app.route('/daily_exercise', methods=['GET', 'POST'])
+@app.route('/daily_exercise', methods=['GET'])
 def daily_exercise():
-    if request.method == 'POST':
-        # Get user input for the exercise
-        progression_input = request.form.get('progression')
-        scale_name = request.form.get('scale')
+    try:
+        # Randomly select a chord progression
+        all_chords = list(chord_library.chord_positions.keys())
+        progression = random.sample(all_chords, min(4, len(all_chords)))  # Select 4 random chords
 
-        if not progression_input or not scale_name:
-            return render_template('daily_exercise.html', error="Please enter a chord progression and a scale.")
+        # Randomly select a scale
+        all_scales = list(scale_library.scales.keys())
+        scale_name = random.choice(all_scales)
 
-        try:
-            # Generate chord progression
-            chord_names = [chord.strip() for chord in progression_input.split(",")]
-            progression = chord_library.create_chord_progression(chord_names)
+        # Generate chord progression data
+        progression_data = chord_library.create_chord_progression(progression)
 
-            # Generate scale diagram
-            scale_data = scale_library.get_scale(scale_name)
-            scale_positions = scale_data["positions"]
-            scale_svg = scale_library.draw_scale(scale_positions)
+        # Generate scale diagram
+        scale_data = scale_library.get_scale(scale_name)
+        scale_positions = scale_data["positions"]
+        scale_svg = scale_library.draw_scale(scale_positions)
 
-            # Generate individual chord diagrams, removing duplicates
-            chord_svgs = []
-            seen_chords = set()
-            for chord in progression:
-                if chord["name"] not in seen_chords:
-                    svg = chord_library.draw_chord(chord["positions"], chord["fingers"])
-                    chord_svgs.append({"name": chord["name"], "svg": svg})
-                    seen_chords.add(chord["name"])  # Track unique chord names
+        # Generate individual chord diagrams
+        chord_svgs = []
+        for chord in progression_data:
+            svg = chord_library.draw_chord(chord["positions"], chord["fingers"])
+            chord_svgs.append({"name": chord["name"], "svg": svg})
 
-            return render_template(
-                'daily_exercise.html',
-                progression=progression,
-                scale_name=scale_name,
-                scale_svg=scale_svg,
-                chord_svgs=chord_svgs  # Pass unique chord diagrams
-            )
-        except ValueError as e:
-            return render_template('daily_exercise.html', error=str(e))
-    else:
-        # Render the exercise page
-        return render_template('daily_exercise.html')
+        return render_template(
+            'daily_exercise.html',
+            progression=progression_data,
+            scale_name=scale_name,
+            scale_svg=scale_svg,
+            chord_svgs=chord_svgs
+        )
+    except ValueError as e:
+        return render_template('daily_exercise.html', error=str(e))
 
 if __name__ == '__main__':
     app.run(debug=True)

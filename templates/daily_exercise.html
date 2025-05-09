@@ -14,31 +14,6 @@
             font-size: 36px;
             margin-top: 20px;
         }
-        form {
-            margin: 20px auto;
-            width: 50%;
-        }
-        label {
-            font-size: 18px;
-        }
-        input {
-            font-size: 16px;
-            padding: 8px;
-            width: 60%;
-            margin: 10px 0;
-        }
-        button {
-            font-size: 16px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
         .section {
             margin: 30px 0;
         }
@@ -73,61 +48,97 @@
             font-size: 18px;
             margin-top: 20px;
         }
+        .hidden {
+            display: none;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 
 <body>
     <h1>Daily Exercise</h1>
-    <form method="POST" action="/daily_exercise">
-        <label for="progression">Enter a chord progression (e.g., G, C, D, Em):</label>
-        <input type="text" id="progression" name="progression" required>
-        <br>
-        <label for="scale">Enter a scale name (e.g., G Minor Pentatonic):</label>
-        <input type="text" id="scale" name="scale" required>
-        <br>
-        <button type="submit">Generate Exercise</button>
-    </form>
 
     {% if error %}
         <p class="error">Error: {{ error }}</p>
     {% endif %}
 
-    {% if progression and scale_svg %}
-        <div class="section">
-            <h2>Chord Diagrams</h2>
-            <div class="chord-grid">
-                {% for chord in chord_svgs %}
-                    <div>
-                        <h3>{{ chord.name }}</h3>
-                        <div class="svg-container">
-                            {{ chord.svg|safe }}
-                        </div>
+    <div id="chord-section" class="section">
+        <h2>Chord Diagrams</h2>
+        <div class="chord-grid">
+            {% for chord in chord_svgs %}
+                <div>
+                    <h3>{{ chord.name }}</h3>
+                    <div class="svg-container">
+                        {{ chord.svg|safe }}
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endfor %}
         </div>
+        <button onclick="showProgression()">I'm Ready for the Progression</button>
+    </div>
 
-        <div class="section">
-            <h2>Chord Progression</h2>
-            <div class="chord-row">
-                {% for chord in progression %}
-                    <span class="chord-cell">{{ chord.name }}</span>
-                    {% if not loop.last %}
-                        <span class="slash">/</span>
-                    {% endif %}
-                {% endfor %}
-            </div>
+    <div id="progression-section" class="section hidden">
+        <h2>Chord Progression</h2>
+        <div class="chord-row">
+            {% for chord in progression %}
+                <span class="chord-cell">{{ chord.name }}</span>
+                {% if not loop.last %}
+                    <span class="slash">/</span>
+                {% endif %}
+            {% endfor %}
         </div>
+        <button onclick="showScales()">I'm Ready for Scales</button>
+    </div>
 
-        <div class="section">
-            <h2>Scale Diagram</h2>
-            <div class="svg-container">
-                {{ scale_svg|safe }}
-            </div>
+    <div id="scale-section" class="section hidden">
+        <h2>Scale Diagram</h2>
+        <h3>{{ scale_name }}</h3>
+        <div class="svg-container">
+            {{ scale_svg|safe }}
         </div>
-    {% endif %}
+        <button onclick="finishExercise()">Finish Exercise</button>
+    </div>
 
-    <a href="/">Back to Home</a>
+    <div id="completion-message" class="section hidden">
+        <h2>Great Job! 🎉</h2>
+        <p>You have completed today's exercise!</p>
+        <a href="/">Back to Home</a>
+    </div>
+
+    <script>
+        function showProgression() {
+            // Keep the chord section visible
+            document.getElementById('chord-section').classList.remove('hidden');
+            // Show the progression section
+            document.getElementById('progression-section').classList.remove('hidden');
+        }
+
+        function showScales() {
+            // Hide both the chord section and progression section
+            document.getElementById('chord-section').classList.add('hidden');
+            document.getElementById('progression-section').classList.add('hidden');
+            // Show the scale section
+            document.getElementById('scale-section').classList.remove('hidden');
+        }
+
+        function finishExercise() {
+            // Hide the scale section
+            document.getElementById('scale-section').classList.add('hidden');
+            // Show the completion message
+            document.getElementById('completion-message').classList.remove('hidden');
+        }
+    </script>
 </body>
-
 </html>
