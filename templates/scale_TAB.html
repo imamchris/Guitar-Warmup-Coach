@@ -4,24 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scale Diagram</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
     <style>
         .svg-container {
             margin: 20px auto;
             width: 400px;
             height: auto;
         }
+
+        .hidden {
+            display: none;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
-    <h1>Generate a Scale Diagram</h1>
-    <form method="POST" action="/scale_diagram">
-        <label for="scale">Enter Scale Name:</label>
-        <input type="text" id="scale" name="scale" required>
-        <button type="submit">Generate</button>
-    </form>
+    <h1>Scale Diagram</h1>
 
     {% if error %}
-        <p style="color: red;">Error: {{ error }}</p>
+        <p class="error">Error: {{ error }}</p>
     {% endif %}
 
     {% if scale_svg %}

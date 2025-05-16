@@ -2,44 +2,8 @@
 <html>
 <head>
     <title>Chord Progression and Charts</title>
-
+    <link rel="stylesheet" href="/static/css/styles.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-        }
-        h1 {
-            font-size: 36px;
-            margin-top: 20px;
-        }
-        form {
-            margin: 20px auto;
-            width: 50%;
-        }
-        label {
-            font-size: 18px;
-        }
-        input {
-            font-size: 16px;
-            padding: 8px;
-            width: 60%;
-            margin: 10px 0;
-        }
-        button {
-            font-size: 16px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
         .chord-row {
             display: flex;
             justify-content: center;
@@ -47,52 +11,57 @@
             gap: 20px;
             font-size: 24px;
             font-weight: bold;
-            margin-top: 20px;
-            color: #333;
+            margin: 20px 0;
         }
+
         .slash {
             margin: 0 10px;
             color: #555;
         }
+
         .chord-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 columns */
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             justify-items: center;
             margin: 20px auto;
             max-width: 900px;
         }
+
         .svg-container {
-            margin: 10px auto;
-            width: 200px;
+            width: 150px;
             height: auto;
+            margin: 10px 0;
         }
+
         .error {
             color: red;
             font-size: 18px;
-            margin-top: 20px;
+            text-align: center;
+            margin: 20px 0;
         }
+
+        h1, h2 {
+            text-align: center;
+        }
+
         a {
-            display: inline-block;
+            display: block;
+            text-align: center;
             margin-top: 20px;
             font-size: 16px;
             color: #007BFF;
             text-decoration: none;
         }
+
         a:hover {
             text-decoration: underline;
         }
     </style>
-
 </head>
 
 <body>
     <h1>Chord Progression and Charts</h1>
-    <form method="POST" action="/chord_progression">
-        <label for="progression">Enter a chord progression (e.g., G, C, D, Em):</label>
-        <input type="text" id="progression" name="progression" required>
-        <button type="submit">Generate</button>
-    </form>
 
     {% if error %}
         <p class="error">Error: {{ error }}</p>
