@@ -18,51 +18,36 @@ class ChordLibrary:
         return self.chord_positions[chord_name]
 
     def draw_chord(self, frets, fingers, chord_name=""):
-        """Generate an SVG representation of the chord diagram."""
-        # Start SVG
+        top_margin = 20
         svg = [
-            '<svg width="200" height="270" xmlns="http://www.w3.org/2000/svg">',  # Increased height from 250 to 270
-            '<!-- Guitar strings -->',
+            '<svg width="200" height="280" xmlns="http://www.w3.org/2000/svg">',
+            f'<text x="115" y="{top_margin}" text-anchor="middle" font-size="20" font-weight="bold" fill="black">{chord_name}</text>',
         ]
-
-        # Add chord name at the top, move it higher (y=22)
-        if chord_name:
-            svg.append(f'<text x="100" y="22" text-anchor="middle" font-size="20" font-weight="bold" fill="black">{chord_name}</text>')
-
         # Draw strings
-        for string_index in range(6):  # 6 strings
+        for string_index in range(6):
             string_x = 40 + (string_index * 30)
-            svg.append(f'<line x1="{string_x}" y1="40" x2="{string_x}" y2="200" stroke="black" stroke-width="2"/>')
-
+            svg.append(f'<line x1="{string_x}" y1="{50+top_margin}" x2="{string_x}" y2="{210+top_margin}" stroke="black" stroke-width="2"/>')
         # Draw frets
-        for fret_index in range(5):  # 4 frets + nut
-            fret_y = 40 + (fret_index * 40)
+        for fret_index in range(5):
+            fret_y = 50 + (fret_index * 40) + top_margin
             svg.append(f'<line x1="40" y1="{fret_y}" x2="190" y2="{fret_y}" stroke="black" stroke-width="3"/>')
-
-        svg.append('<line x1="39" y1="40" x2="191" y2="40" stroke="black" stroke-width="5"/>')  # Draw nut
-
-        # Indicate open or muted strings at the top
+        svg.append(f'<line x1="39" y1="{50+top_margin}" x2="191" y2="{50+top_margin}" stroke="black" stroke-width="5"/>')
+        # Open/muted strings
         for string_index, fret in enumerate(frets):
             string_x = 40 + (string_index * 30)
-            if fret == 0:  # Open string indicator
-                svg.append(f'<text x="{string_x}" y="30" text-anchor="middle" font-size="12" fill="black">O</text>')
-            elif fret == -1:  # Muted string indicator
-                svg.append(f'<text x="{string_x}" y="30" text-anchor="middle" font-size="12" fill="black">X</text>')
-
-        # Draw finger positions
+            if fret == 0:
+                svg.append(f'<text x="{string_x}" y="{40+top_margin}" text-anchor="middle" font-size="12" fill="black">O</text>')
+            elif fret == -1:
+                svg.append(f'<text x="{string_x}" y="{40+top_margin}" text-anchor="middle" font-size="12" fill="black">X</text>')
+        # Finger positions
         for string_index, fret in enumerate(frets):
             string_x = 40 + (string_index * 30)
             if fret > 0:
-                # Adjust fret_y to place the dot in the middle of the fret
-                fret_y = 40 + ((fret - 1) * 40) + 20
-                # Draw finger dot
+                fret_y = 50 + ((fret - 1) * 40) + 20 + top_margin
                 svg.append(f'<circle cx="{string_x}" cy="{fret_y}" r="10" fill="black"/>')
-                # Add finger number inside the dot
                 finger = fingers[string_index]
                 if finger > 0:
                     svg.append(f'<text x="{string_x}" y="{fret_y + 4}" text-anchor="middle" font-size="10" fill="white">{finger}</text>')
-
-        # Close SVG
         svg.append('</svg>')
         return "\n".join(svg)
 

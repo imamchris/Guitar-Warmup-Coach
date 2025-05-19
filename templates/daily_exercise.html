@@ -38,20 +38,21 @@
             background: #f9f9f9;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            padding: 20px 16px;
-            min-width: 170px;
-            max-width: 180px;
+            padding: 60px 18px 32px 18px; /* increased top padding from 32px to 60px */
+            min-width: 220px;
+            max-width: 240px;
+            min-height: 320px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .svg-container.chord-svg {
-            width: 150px;
-            margin: 0 auto;
-        }
-        .svg-container.chord-svg svg {
-            display: block;
-            margin: 0 auto;
+            width: 200px;                 /* was 150px */
+            height: 260px;                /* match your SVG height */
+            margin: 0 auto 0 auto; /* remove top margin */
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
         }
         .chord-row {
             display: flex;
