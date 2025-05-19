@@ -42,7 +42,7 @@ def chord_progression():
         # Generate chord charts for each chord in the progression
         chord_svgs = []
         for chord in progression:
-            svg = chord_library.draw_chord(chord["positions"], chord["fingers"])
+            svg = chord_library.draw_chord(chord["positions"], chord["fingers"], "")
             chord_svgs.append({"name": chord["name"], "svg": svg})
 
         return render_template(

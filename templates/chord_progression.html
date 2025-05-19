@@ -57,6 +57,20 @@
         a:hover {
             text-decoration: underline;
         }
+
+        .chord-card {
+            text-align: center;
+        }
+
+        .chord-label {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .chord-svg {
+            width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 
@@ -81,11 +95,9 @@
         <h2>Chord Charts:</h2>
         <div class="chord-grid">
             {% for chord in chord_svgs %}
-                <div>
-                    <h3>{{ chord.name }}</h3>
-                    <div class="svg-container">
-                        {{ chord.svg|safe }}
-                    </div>
+                <div class="chord-card">
+                    <div class="chord-label">{{ chord.name }}</div>
+                    <div class="svg-container chord-svg">{{ chord.svg|safe }}</div>
                 </div>
             {% endfor %}
         </div>

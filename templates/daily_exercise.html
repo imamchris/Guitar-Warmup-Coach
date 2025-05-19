@@ -27,10 +27,6 @@
             margin-bottom: 28px;
             font-size: 1.6em;
         }
-        h3 {
-            margin-bottom: 12px;
-            font-size: 1.1em;
-        }
         .chord-grid {
             display: flex;
             flex-wrap: wrap;
@@ -43,13 +39,19 @@
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             padding: 20px 16px;
-            text-align: center;
             min-width: 170px;
+            max-width: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .svg-container {
-            margin: 0 auto;
+        .svg-container.chord-svg {
             width: 150px;
-            height: auto;
+            margin: 0 auto;
+        }
+        .svg-container.chord-svg svg {
+            display: block;
+            margin: 0 auto;
         }
         .chord-row {
             display: flex;
@@ -100,16 +102,6 @@
             text-align: center;
             margin-bottom: 24px;
         }
-        @media (max-width: 700px) {
-            .main-container { padding: 18px 4vw 32px 4vw; }
-            .chord-grid { gap: 18px; }
-            .chord-row { gap: 10px; font-size: 1.1em; }
-        }
-        .svg-container.chord-svg {
-            width: 150px;
-            max-width: 100%;
-            margin: 0 auto;
-        }
         .scale-svg-container {
             width: 100%;
             max-width: 520px;
@@ -128,6 +120,11 @@
             max-width: 500px;
             min-width: 350px;
             display: block;
+        }
+        @media (max-width: 700px) {
+            .main-container { padding: 18px 4vw 32px 4vw; }
+            .chord-grid { gap: 18px; }
+            .chord-row { gap: 10px; font-size: 1.1em; }
         }
     </style>
 </head>
@@ -151,7 +148,9 @@
                 <div class="chord-grid">
                     {% for chord in chord_svgs %}
                         <div class="chord-card">
-                            <div class="svg-container chord-svg">{{ chord.svg|safe }}</div>
+                            <div class="svg-container chord-svg">
+                                {{ chord.svg|safe }}
+                            </div>
                         </div>
                     {% endfor %}
                 </div>

@@ -21,13 +21,13 @@ class ChordLibrary:
         """Generate an SVG representation of the chord diagram."""
         # Start SVG
         svg = [
-            '<svg width="200" height="250" xmlns="http://www.w3.org/2000/svg">',
+            '<svg width="200" height="270" xmlns="http://www.w3.org/2000/svg">',  # Increased height from 250 to 270
             '<!-- Guitar strings -->',
         ]
 
-        # Add chord name at the top, position can be adjusted by changing x and y values
+        # Add chord name at the top, move it higher (y=22)
         if chord_name:
-            svg.append(f'<text x="100" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="black">{chord_name}</text>')
+            svg.append(f'<text x="100" y="22" text-anchor="middle" font-size="20" font-weight="bold" fill="black">{chord_name}</text>')
 
         # Draw strings
         for string_index in range(6):  # 6 strings
