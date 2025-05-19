@@ -81,47 +81,47 @@ class ScaleLibrary:
         # Patterns written as if root is at 3rd fret (G) on low E string
         self.patterns = {
             "Minor Pentatonic": [
-                [3, 6],  # E string
-                [3, 5],  # A string
+                [3, 6],  # High E string
+                [3, 6],  # A string
                 [3, 5],  # D string
                 [3, 5],  # G string
-                [3, 6],  # B string
-                [3, 6],  # E string
+                [3, 5],  # B string
+                [3, 6],  # Low E string
             ],
             "Major Pentatonic": [
-                [2, 3, 5],  # High E string
-                [3, 5],  # A string
-                [2, 4, 5],  # D string
-                [2, 4, 5],  # G string
-                [2, 3, 5],  # B string
-                [3, 5],  # Low E string
+                [2, 3, 5],
+                [3, 5],
+                [2, 4, 5],
+                [2, 4, 5],
+                [2, 3, 5],
+                [3, 5],  
             ],
 
             "Blues Scales": [
-                [3, 6],  # E string
-                [3, 5, 6],  # A string
-                [3, 5],  # D string
-                [3, 5, 6],  # G string
-                [3, 6],  # B string
-                [3, 6],  # high E string
+                [3, 6],  
+                [3, 6],
+                [3, 5, 6],  
+                [3, 5],  
+                [3, 4, 5],  
+                [3, 6],  
             ],
 
             "Major Scale": [
-                [3, 5],  # E string
-                [2, 3, 5],  # A string
-                [2, 4, 5],  # D string
-                [2, 4, 5],  # G string
-                [3, 5],  # B string
-                [2, 3],  # high E string
+                [2, 5],
+                [2, 5],
+                [2, 4],
+                [2, 4], 
+                [2, 4],
+                [5], 
             ],
 
             "Natural Minor Scale": [
-                [3, 5, 6],  # E string
-                [3, 5, 6],  # A string
-                [3, 5],  # D string
-                [2, 3, 5],  # G string
-                [3, 5, 6],  # B string
-                [3, 5, 6],  # high E string
+                [3, 5, 6],
+                [3, 4, 6],
+                [2, 3, 5],
+                [3, 5],
+                [3, 5, 6],
+                [3, 5, 6],
             ]
         }
 
@@ -140,49 +140,69 @@ class ScaleLibrary:
         return positions
 
     def draw_scale(self, positions):
-        """Generate an SVG representation of the scale diagram."""
-        # Start SVG
+        """Generate an SVG representation of the scale diagram, only showing used frets."""
+        # Flatten all frets into a single list
+        all_frets = [fret for string in positions for fret in string]
+        min_fret = min(all_frets)
+        max_fret = max(all_frets)
+
+        # Add padding (show one fret below and above if possible)
+        display_min = max(1, min_fret - 1)
+        display_max = max_fret + 1
+
+        num_frets = display_max - display_min + 1
+
+        # Larger SVG dimensions
+        fret_width = 55
+        string_height = 45
+        left_margin = 70
+        top_margin = 60
+        bottom_margin = 40
+        svg_width = left_margin + num_frets * fret_width + 30
+        svg_height = top_margin + 5 * string_height + bottom_margin
+
         svg = [
-            '<svg width="500" height="250" xmlns="http://www.w3.org/2000/svg">',
+            f'<svg width="{svg_width}" height="{svg_height}" xmlns="http://www.w3.org/2000/svg" style="background:white">',
+            '<rect x="0" y="0" width="100%" height="100%" fill="white"/>',
             '<!-- Guitar strings -->',
         ]
 
-        # Draw strings
-        for string_index in range(6):  # 6 strings
-            y = 30 + (string_index * 30)
-            svg.append(f'<line x1="50" y1="{y}" x2="470" y2="{y}" stroke="black" stroke-width="2"/>')
+        # Draw strings (6 strings)
+        for string_index in range(6):
+            y = top_margin + (string_index * string_height)
+            svg.append(f'<line x1="{left_margin}" y1="{y}" x2="{left_margin + num_frets * fret_width}" y2="{y}" stroke="black" stroke-width="3"/>')
 
         # Draw frets
-        for fret_index in range(1, 13):  # 12 frets
-            x = 50 + (fret_index * 35)
-            svg.append(f'<line x1="{x}" y1="30" x2="{x}" y2="180" stroke="black" stroke-width="1"/>')
+        for fret_index in range(num_frets + 1):  # +1 to draw the last fret line
+            x = left_margin + (fret_index * fret_width)
+            svg.append(f'<line x1="{x}" y1="{top_margin}" x2="{x}" y2="{top_margin + 5 * string_height}" stroke="black" stroke-width="4" />')
 
-        # Draw nut (just before the first fret)
-        svg.append('<line x1="50" y1="30" x2="50" y2="180" stroke="black" stroke-width="3"/>')
+        # Draw nut if the first displayed fret is 1
+        if display_min == 1:
+            svg.append(f'<rect x="{left_margin - 4}" y="{top_margin - 2}" width="8" height="{5 * string_height + 4}" fill="black" />')
 
         # Add fret numbers
-        for fret_index in range(1, 13):  # 12 frets
-            x = 42 + (fret_index * 35)
-            svg.append(f'<text x="{x - 10}" y="20" text-anchor="middle" font-size="12" fill="black">{fret_index}</text>')
+        for i in range(num_frets):
+            fret_num = display_min + i
+            x = left_margin + (i * fret_width) + fret_width / 2
+            svg.append(f'<text x="{x}" y="{top_margin - 18}" text-anchor="middle" font-size="22" font-weight="bold" fill="black">{fret_num}</text>')
 
-        # Draw scale positions
+        # Draw scale positions (smaller circles, no red stroke)
         for string_index, frets in enumerate(positions):
-            y = 30 + (string_index * 30)
+            y = top_margin + (string_index * string_height)
             for fret in frets:
-                x = 50 + (fret * 35)
-                # Draw circle for scale position
-                svg.append(f'<circle cx="{x}" cy="{y}" r="10" fill="black"/>')
-                # Add fret number inside the circle
-                svg.append(f'<text x="{x}" y="{y + 4}" text-anchor="middle" font-size="10" fill="white">{fret}</text>')
+                if display_min <= fret <= display_max:
+                    x = left_margin + ((fret - display_min) * fret_width) + fret_width / 2
+                    svg.append(f'<circle cx="{x}" cy="{y}" r="12" fill="black"/>')
+                    svg.append(f'<text x="{x}" y="{y + 5}" text-anchor="middle" font-size="14" font-weight="bold" fill="white">{fret}</text>')
 
-        # Close SVG
         svg.append('</svg>')
         return "\n".join(svg)
 
 
 # Goals for the code:
 # 1. Make a simple dashboard to display a basic interface to access 'daily exercises' X
-# 2. Find a a way to combine the chord charts, scales, and progressions together in one big excercise
+# 2. Find a a way to combine the chord charts, scales, and progressions together in one big excercise x
 # 3. Create a login system to save user data and progress
 # 4. Create a tutorial on how to read TAB, Chord Charts, and Chord Progressions
 # 5. Tailor the exercises to the user based on their progress and data
