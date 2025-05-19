@@ -72,26 +72,40 @@ class ChordLibrary:
 
 
 class ScaleLibrary:
+    NOTE_TO_FRET = {
+        "E": 0, "F": 1, "F#": 2, "G": 3, "G#": 4, "A": 5, "A#": 6, "B": 7, "C": 8, "C#": 9, "D": 10, "D#": 11
+    } # NOTE: This is a possible security risk, as it exposes the mapping of notes to frets. MUST BE CORRECTED
+
+    STRING_TUNINGS = ["E", "A", "D", "G", "B", "E"]
+
     def __init__(self):
-        # Define scale positions (strings ordered EADGBE, frets for each string)
-        self.scales = {
-            "G Minor Pentatonic": {
-                "positions": [
-                    [3, 6],  # Low E string
-                    [3, 5],  # A string
-                    [3, 5],  # D string
-                    [3, 5],  # G string
-                    [3, 5],  # B string
-                    [3, 6],  # High E string
-                ]
-            },
+        self.patterns = {
+            "Minor Pentatonic": [
+                [0, 3],  # E string
+                [0, 2],  # A string
+                [0, 2],  # D string
+                [0, 2],  # G string
+                [0, 3],  # B string
+                [0, 3],  # high E string
+            ],
+            # Add more patterns here...
         }
 
-    def get_scale(self, scale_name):
-        """Retrieve scale positions."""
-        if scale_name not in self.scales:
-            raise ValueError(f"Scale '{scale_name}' not found in library.")
-        return self.scales[scale_name]
+    def get_scale_positions(self, pattern_name, key, root_string=0):
+        """
+        Generate scale positions for a given pattern and key.
+        pattern_name: str, e.g. "Minor Pentatonic"
+        key: str, e.g. "G"
+        root_string: int, 0=low E, 1=A, etc.
+        """
+        pattern = self.patterns[pattern_name]
+        root_fret = self.NOTE_TO_FRET[key]
+        positions = []
+        for string_idx, intervals in enumerate(pattern):
+            # For more advanced: calculate base_fret using tuning
+            base_fret = root_fret  # Simple version: root on low E
+            positions.append([base_fret + i for i in intervals])
+        return positions
 
     def draw_scale(self, positions):
         """Generate an SVG representation of the scale diagram."""

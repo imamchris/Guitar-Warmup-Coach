@@ -4,76 +4,79 @@
     <title>Chord Progression and Charts</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <style>
+        body {
+            background: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        h1, h2 {
+            text-align: center;
+        }
         .chord-row {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
-            font-size: 24px;
+            gap: 28px;
+            font-size: 1.5em;
             font-weight: bold;
-            margin: 20px 0;
+            margin: 40px 0 24px 0;
+            letter-spacing: 2px;
         }
-
         .slash {
-            margin: 0 10px;
-            color: #555;
+            color: #007bff;
         }
-
         .chord-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            justify-items: center;
-            margin: 20px auto;
-            max-width: 900px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 48px;
+            margin: 36px 0 24px 0;
         }
-
-        .svg-container {
-            width: 150px;
-            height: auto;
-            margin: 10px 0;
+        .chord-card {
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 60px 18px 32px 18px;
+            min-width: 220px;
+            max-width: 240px;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
+        .chord-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .svg-container.chord-svg {
+            width: 200px;
+            height: 260px;
+            margin: 0 auto 0 auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
         .error {
             color: red;
             font-size: 18px;
             text-align: center;
             margin: 20px 0;
         }
-
-        h1, h2 {
-            text-align: center;
-        }
-
         a {
             display: block;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 40px;
             font-size: 16px;
             color: #007BFF;
             text-decoration: none;
         }
-
         a:hover {
             text-decoration: underline;
         }
-
-        .chord-card {
-            text-align: center;
-        }
-
-        .chord-label {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .chord-svg {
-            width: 100%;
-            height: auto;
-        }
     </style>
 </head>
-
 <body>
     <h1>Chord Progression and Charts</h1>
 
@@ -85,7 +88,7 @@
         <h2>Chord Progression:</h2>
         <div class="chord-row">
             {% for chord in progression %}
-                <span class="chord-cell">{{ chord.name }}</span>
+                <span>{{ chord.name }}</span>
                 {% if not loop.last %}
                     <span class="slash">/</span>
                 {% endif %}
@@ -96,8 +99,10 @@
         <div class="chord-grid">
             {% for chord in chord_svgs %}
                 <div class="chord-card">
-                    <div class="chord-label">{{ chord.name }}</div>
-                    <div class="svg-container chord-svg">{{ chord.svg|safe }}</div>
+                    <div class="chord-title">{{ chord.name }}</div>
+                    <div class="svg-container chord-svg">
+                        {{ chord.svg|safe }}
+                    </div>
                 </div>
             {% endfor %}
         </div>
