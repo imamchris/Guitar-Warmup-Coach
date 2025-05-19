@@ -74,37 +74,69 @@ class ChordLibrary:
 class ScaleLibrary:
     NOTE_TO_FRET = {
         "E": 0, "F": 1, "F#": 2, "G": 3, "G#": 4, "A": 5, "A#": 6, "B": 7, "C": 8, "C#": 9, "D": 10, "D#": 11
-    } # NOTE: This is a possible security risk, as it exposes the mapping of notes to frets. MUST BE CORRECTED
-
+    }
     STRING_TUNINGS = ["E", "A", "D", "G", "B", "E"]
 
     def __init__(self):
+        # Patterns written as if root is at 3rd fret (G) on low E string
         self.patterns = {
             "Minor Pentatonic": [
-                [0, 3],  # E string
-                [0, 2],  # A string
-                [0, 2],  # D string
-                [0, 2],  # G string
-                [0, 3],  # B string
-                [0, 3],  # high E string
+                [3, 6],  # E string
+                [3, 5],  # A string
+                [3, 5],  # D string
+                [3, 5],  # G string
+                [3, 6],  # B string
+                [3, 6],  # E string
             ],
-            # Add more patterns here...
+            "Major Pentatonic": [
+                [2, 3, 5],  # High E string
+                [3, 5],  # A string
+                [2, 4, 5],  # D string
+                [2, 4, 5],  # G string
+                [2, 3, 5],  # B string
+                [3, 5],  # Low E string
+            ],
+
+            "Blues Scales": [
+                [3, 6],  # E string
+                [3, 5, 6],  # A string
+                [3, 5],  # D string
+                [3, 5, 6],  # G string
+                [3, 6],  # B string
+                [3, 6],  # high E string
+            ],
+
+            "Major Scale": [
+                [3, 5],  # E string
+                [2, 3, 5],  # A string
+                [2, 4, 5],  # D string
+                [2, 4, 5],  # G string
+                [3, 5],  # B string
+                [2, 3],  # high E string
+            ],
+
+            "Natural Minor Scale": [
+                [3, 5, 6],  # E string
+                [3, 5, 6],  # A string
+                [3, 5],  # D string
+                [2, 3, 5],  # G string
+                [3, 5, 6],  # B string
+                [3, 5, 6],  # high E string
+            ]
         }
 
     def get_scale_positions(self, pattern_name, key, root_string=0):
         """
         Generate scale positions for a given pattern and key.
-        pattern_name: str, e.g. "Minor Pentatonic"
-        key: str, e.g. "G"
-        root_string: int, 0=low E, 1=A, etc.
+        Patterns are defined as if root is at 3rd fret (G).
         """
         pattern = self.patterns[pattern_name]
-        root_fret = self.NOTE_TO_FRET[key]
+        g_fret = self.NOTE_TO_FRET["G"]
+        key_fret = self.NOTE_TO_FRET[key]
+        offset = key_fret - g_fret
         positions = []
-        for string_idx, intervals in enumerate(pattern):
-            # For more advanced: calculate base_fret using tuning
-            base_fret = root_fret  # Simple version: root on low E
-            positions.append([base_fret + i for i in intervals])
+        for string_pattern in pattern:
+            positions.append([fret + offset for fret in string_pattern])
         return positions
 
     def draw_scale(self, positions):

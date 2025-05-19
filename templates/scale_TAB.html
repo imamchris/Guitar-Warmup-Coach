@@ -30,6 +30,13 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        .scale-title {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -40,7 +47,11 @@
     {% endif %}
 
     {% if scale_svg %}
-        <h2>Scale: {{ scale }}</h2>
+        <div class="scale-title">
+            Scale: {{ scale_name }} in {{ scale_key }}
+            {# Optionally show root string: #}
+            {# {% if root_string is defined %} (Root on {{ root_string }}) {% endif %} #}
+        </div>
         <div class="svg-container">
             {{ scale_svg|safe }}
         </div>

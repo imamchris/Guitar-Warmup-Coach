@@ -183,7 +183,7 @@
                 <button type="submit" class="btn-main">Next Exercise</button>
             </form>
         {% elif exercise_type == "scale" %}
-            <h2>Scale: {{ scale_name }}</h2>
+            <h2>Scale: {{ scale_name }} in {{ scale_key }}</h2>
             <div class="scale-svg-container">
                 {{ scale_svg|safe }}
             </div>

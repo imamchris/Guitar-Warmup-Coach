@@ -14,16 +14,22 @@ def index():
 @app.route('/scale_diagram', methods=['GET'])
 def scale_diagram():
     try:
-        # Randomly select a scale
-        all_scales = list(scale_library.scales.keys())
+        # Randomly select a scale pattern and a key
+        all_scales = list(scale_library.patterns.keys())
+        all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
         scale_name = random.choice(all_scales)
+        key = random.choice(all_keys)
 
         # Fetch scale positions from the library
-        scale_data = scale_library.get_scale(scale_name)
-        positions = scale_data["positions"]
+        positions = scale_library.get_scale_positions(scale_name, key)
         svg = scale_library.draw_scale(positions)  # Generate the scale diagram as SVG
 
-        return render_template('scale_TAB.html', scale=scale_name, scale_svg=svg)
+        return render_template(
+            'scale_TAB.html',
+            scale_name=scale_name,
+            scale_key=key,
+            scale_svg=svg
+        )
     except ValueError as e:
         return render_template('scale_TAB.html', error=str(e))
     except Exception as e:
@@ -100,15 +106,17 @@ def daily_exercise():
             scale_count=scale_count
         )
     else:  # scale
-        all_scales = list(scale_library.scales.keys())
+        all_scales = list(scale_library.patterns.keys())
+        all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
         scale_name = random.choice(all_scales)
-        scale_data = scale_library.get_scale(scale_name)
-        scale_positions = scale_data["positions"]
-        scale_svg = scale_library.draw_scale(scale_positions)
+        key = random.choice(all_keys)
+        positions = scale_library.get_scale_positions(scale_name, key)
+        scale_svg = scale_library.draw_scale(positions)
         return render_template(
             'daily_exercise.html',
             exercise_type=exercise_type,
             scale_name=scale_name,
+            scale_key=key,
             scale_svg=scale_svg,
             chord_count=chord_count,
             scale_count=scale_count + 1
