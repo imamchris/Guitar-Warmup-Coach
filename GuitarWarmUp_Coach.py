@@ -14,31 +14,38 @@ def index():
 @app.route('/scale_diagram', methods=['GET'])
 def scale_diagram():
     try:
-        # Randomly select a scale pattern and a key
+        scale_count = int(request.args.get('scale_count', 0))
+        max_scales = 5  # Set your desired limit here
+
+        if scale_count >= max_scales:
+            return render_template('scale_TAB.html', completed=True, max_scales=max_scales)
+
         all_scales = list(scale_library.patterns.keys())
         all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
         scale_name = random.choice(all_scales)
         key = random.choice(all_keys)
-
-        # Fetch scale positions from the library
         positions = scale_library.get_scale_positions(scale_name, key)
-        svg = scale_library.draw_scale(positions)  # Generate the scale diagram as SVG
-
+        scale_svg = scale_library.draw_scale(positions)
         return render_template(
             'scale_TAB.html',
             scale_name=scale_name,
             scale_key=key,
-            scale_svg=svg
+            scale_svg=scale_svg,
+            scale_count=scale_count + 1,
+            max_scales=max_scales
         )
-    except ValueError as e:
-        return render_template('scale_TAB.html', error=str(e))
     except Exception as e:
-        return render_template('scale_TAB.html', error="An unexpected error occurred.")
+        return render_template('scale_TAB.html', error=str(e))
 
 @app.route('/chord_progression', methods=['GET'])
 def chord_progression():
     try:
-        # Randomly generate a chord progression
+        progression_count = int(request.args.get('progression_count', 0))
+        max_progressions = 3  # You can set this to 2, 3, or 4 as you like
+
+        if progression_count >= max_progressions:
+            return render_template('chord_progression.html', completed=True, max_progressions=max_progressions)
+
         all_chords = list(chord_library.chord_positions.keys())
         chord_names = random.sample(all_chords, min(4, len(all_chords)))  # Select 4 random chords
 
@@ -48,15 +55,17 @@ def chord_progression():
         # Generate chord charts for each chord in the progression
         chord_svgs = []
         for chord in progression:
-            svg = chord_library.draw_chord(chord["positions"], chord["fingers"], "")
+            svg = chord_library.draw_chord(chord["positions"], chord["fingers"], chord["name"])
             chord_svgs.append({"name": chord["name"], "svg": svg})
 
         return render_template(
             'chord_progression.html',
             progression=progression,
-            chord_svgs=chord_svgs
+            chord_svgs=chord_svgs,
+            progression_count=progression_count + 1,
+            max_progressions=max_progressions
         )
-    except ValueError as e:
+    except Exception as e:
         return render_template('chord_progression.html', error=str(e))
 
 @app.route('/daily_exercise', methods=['GET'])

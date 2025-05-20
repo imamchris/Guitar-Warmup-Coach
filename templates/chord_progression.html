@@ -1,15 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chord Progression and Charts</title>
+    <title>Chord Progression Exercises</title>
     <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background: #f4f4f4;
-            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #e0e7ff 0%, #f0fff4 100%);
+            font-family: 'Quicksand', Arial, sans-serif;
+            min-height: 100vh;
         }
-        h1, h2 {
+        .main-container {
+            max-width: 900px;
+            margin: 48px auto 0 auto;
+            background: rgba(255,255,255,0.92);
+            border-radius: 26px;
+            box-shadow: 0 8px 32px rgba(52, 144, 220, 0.13);
+            padding: 48px 32px 56px 32px;
+            backdrop-filter: blur(8px);
+            border: 1.5px solid rgba(180, 220, 255, 0.25);
+        }
+        h1 {
             text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.7em;
+            letter-spacing: 1.5px;
+            color: #2563eb;
+            font-weight: 800;
+            text-shadow: 0 2px 8px #e0e7ff;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 28px;
+            font-size: 1.6em;
+            color: #059669;
+            font-weight: 700;
         }
         .chord-row {
             display: flex;
@@ -20,6 +45,7 @@
             font-weight: bold;
             margin: 40px 0 24px 0;
             letter-spacing: 2px;
+            color: #1e293b;
         }
         .slash {
             color: #007bff;
@@ -32,23 +58,21 @@
             margin: 36px 0 24px 0;
         }
         .chord-card {
-            background: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            padding: 60px 18px 32px 18px;
+            background: #f9fafb;
+            border-radius: 22px;
+            box-shadow: 0 2px 16px rgba(99,102,241,0.10);
+            padding: 48px 18px 32px 18px;
             min-width: 220px;
             max-width: 240px;
             min-height: 320px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: transform 0.18s, box-shadow 0.18s;
         }
-        .chord-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
+        .chord-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 32px rgba(99,102,241,0.13);
         }
         .svg-container.chord-svg {
             width: 200px;
@@ -58,56 +82,89 @@
             align-items: flex-start;
             justify-content: center;
         }
-        .error {
-            color: red;
-            font-size: 18px;
+        .btn-main, button {
+            display: block;
+            background: linear-gradient(90deg, #6366f1 0%, #10b981 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 16px 36px;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 48px auto 0 auto;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            box-shadow: 0 2px 8px rgba(16,185,129,0.10);
+        }
+        .btn-main:hover, button:hover {
+            background: linear-gradient(90deg, #818cf8 0%, #34d399 100%);
+            transform: scale(1.04);
+        }
+        .completion {
             text-align: center;
-            margin: 20px 0;
+            margin-top: 60px;
         }
         a {
-            display: block;
-            text-align: center;
-            margin-top: 40px;
-            font-size: 16px;
-            color: #007BFF;
-            text-decoration: none;
+            color: #6366f1;
+            text-decoration: underline;
+            font-weight: 500;
+            transition: color 0.2s;
         }
         a:hover {
-            text-decoration: underline;
+            color: #059669;
+        }
+        .error {
+            color: #ef4444;
+            font-size: 1.1em;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 700px) {
+            .main-container { padding: 18px 4vw 32px 4vw; }
+            .chord-grid { gap: 18px; }
+            .chord-row { gap: 10px; font-size: 1.1em; }
+            .chord-card { min-width: 140px; max-width: 170px; padding: 18px 4px 18px 4px; }
+            .svg-container.chord-svg { width: 120px; height: 140px; }
         }
     </style>
 </head>
 <body>
-    <h1>Chord Progression and Charts</h1>
-
-    {% if error %}
-        <p class="error">Error: {{ error }}</p>
-    {% endif %}
-
-    {% if progression %}
-        <h2>Chord Progression:</h2>
-        <div class="chord-row">
-            {% for chord in progression %}
-                <span>{{ chord.name }}</span>
-                {% if not loop.last %}
-                    <span class="slash">/</span>
-                {% endif %}
-            {% endfor %}
-        </div>
-
-        <h2>Chord Charts:</h2>
-        <div class="chord-grid">
-            {% for chord in chord_svgs %}
-                <div class="chord-card">
-                    <div class="chord-title">{{ chord.name }}</div>
-                    <div class="svg-container chord-svg">
-                        {{ chord.svg|safe }}
+    <div class="main-container">
+        <h1>Chord Progression Exercises</h1>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if completed %}
+            <div class="completion">
+                <h2>Great Job! 🎉</h2>
+                <p>You have completed {{ max_progressions }} chord progression exercises!</p>
+                <a href="/">Back to Home</a>
+            </div>
+        {% elif progression %}
+            <h2>Chord Progression</h2>
+            <div class="chord-grid">
+                {% for chord in chord_svgs %}
+                    <div class="chord-card">
+                        <div class="svg-container chord-svg">
+                            {{ chord.svg|safe }}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <a href="/">Back to Home</a>
+                {% endfor %}
+            </div>
+            <div class="chord-row">
+                {% for chord in progression %}
+                    <span>{{ chord.name }}</span>
+                    {% if not loop.last %}
+                        <span class="slash">/</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <form method="get">
+                <input type="hidden" name="progression_count" value="{{ progression_count }}">
+                <button type="submit" class="btn-main">Next Exercise</button>
+            </form>
+            <a href="/">Back to Home</a>
+        {% endif %}
+    </div>
 </body>
 </html>

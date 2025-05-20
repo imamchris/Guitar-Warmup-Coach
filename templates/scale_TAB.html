@@ -1,62 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scale Diagram</title>
+    <title>Scale Exercise</title>
     <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        .svg-container {
-            margin: 20px auto;
-            width: 400px;
-            height: auto;
+        .main-container {
+            max-width: 900px;
+            margin: 48px auto 0 auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 48px 32px 56px 32px;
         }
-
-        .hidden {
-            display: none;
-        }
-
-        button {
-            font-size: 16px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .scale-title {
+        h1 {
             text-align: center;
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            margin-top: 30px;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            letter-spacing: 1px;
+        }
+        .scale-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+        }
+        .scale-svg-container {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto 36px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 24px 0;
+            overflow-x: auto;
+        }
+        .scale-svg-container svg {
+            width: 100%;
+            height: auto;
+            max-width: 500px;
+            min-width: 350px;
+            display: block;
+        }
+        .btn-main, button {
+            display: block;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 16px 36px;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 48px auto 0 auto;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-main:hover, button:hover {
+            background: #339cff;
+        }
+        a {
+            color: #007bff;
+            text-decoration: underline;
+        }
+        a:hover {
+            color: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 1.1em;
+            text-align: center;
+            margin-bottom: 24px;
         }
     </style>
 </head>
 <body>
-    <h1>Scale Diagram</h1>
-
-    {% if error %}
-        <p class="error">Error: {{ error }}</p>
-    {% endif %}
-
-    {% if scale_svg %}
-        <div class="scale-title">
-            Scale: {{ scale_key }} {{ scale_name }}
-            {# Optionally show root string: #}
-            {# {% if root_string is defined %} (Root on {{ root_string }}) {% endif %} #}
-        </div>
-        <div class="svg-container">
-            {{ scale_svg|safe }}
-        </div>
-    {% endif %}
-
-    <a href="/">Back to Home</a>
+    <div class="main-container">
+        <h1>Scale Exercise</h1>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if completed %}
+            <div class="completion">
+                <h2>Great Job! 🎉</h2>
+                <p>You have completed {{ max_scales }} scale exercises!</p>
+                <a href="/">Back to Home</a>
+            </div>
+        {% elif scale_svg %}
+            <div class="scale-title">
+                Scale: {{ scale_key }} {{ scale_name }}
+            </div>
+            <div class="scale-svg-container">
+                {{ scale_svg|safe }}
+            </div>
+            <form method="get">
+                <input type="hidden" name="scale_count" value="{{ scale_count }}">
+                <button type="submit" class="btn-main">Next Scale</button>
+            </form>
+            <a href="/">Back to Home</a>
+        {% endif %}
+    </div>
 </body>
 </html>
