@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+<div class="main-container">
+    <h1>Sign Up</h1>
+    <form method="post">
+        <input type="text" name="username" placeholder="Username" required class="btn-main" style="margin-bottom:16px;">
+        <input type="password" name="password" placeholder="Password" required class="btn-main" style="margin-bottom:16px;">
+        <button type="submit" class="btn-main">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="error">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</div>
+</body>
+</html>
