@@ -13,6 +13,7 @@ engine = create_engine(DATABASE_URI) # Database generation if not pre-existing
 
 with engine.connect() as conn:
     conn.execute(text('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT UNIQUE, password_hash TEXT)'))
+    conn.execute(text('CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, user_id INTEGER, exercise_type TEXT, rating INTEGER)'))
     conn.commit()
 
 # Core Functional requirements of the Application
@@ -56,17 +57,33 @@ def scale_diagram():
     except Exception as e:
         return render_template('scale_TAB.html', error=str(e))
 
-@app.route('/chord_progression', methods=['GET'])
+@app.route('/chord_progression', methods=['GET', 'POST'])
 def chord_progression():
-    """Show a random chord progression, up to a maximum number."""
-    # ... (function body can be collapsed in IDE)
     if 'user_id' not in session:
         return redirect(url_for('login'))
     try:
-        progression_count = int(request.args.get('progression_count', 0))
+        # Get progression_count from either GET or POST
+        if request.method == 'POST':
+            progression_count = int(request.form.get('progression_count', 0))
+        else:
+            progression_count = int(request.args.get('progression_count', 0))
         max_progressions = 3
+
+        if request.method == 'POST':
+            # Handle feedback submission
+            rating = int(request.form['rating'])
+            with engine.connect() as conn:
+                conn.execute(
+                    text("INSERT INTO feedback (user_id, exercise_type, rating) VALUES (:user_id, :exercise_type, :rating)"),
+                    {'user_id': session['user_id'], 'exercise_type': 'chord_progression', 'rating': rating}
+                )
+                conn.commit()
+            flash('Thank you for your feedback!', 'success')
+            progression_count += 1  # Move to next exercise
+
         if progression_count >= max_progressions:
             return render_template('chord_progression.html', completed=True, max_progressions=max_progressions)
+
         all_chords = list(chord_library.chord_positions.keys())
         chord_names = random.sample(all_chords, min(4, len(all_chords)))
         progression = chord_library.create_chord_progression(chord_names)
@@ -78,8 +95,9 @@ def chord_progression():
             'chord_progression.html',
             progression=progression,
             chord_svgs=chord_svgs,
-            progression_count=progression_count + 1,
-            max_progressions=max_progressions
+            progression_count=progression_count,
+            max_progressions=max_progressions,
+            show_feedback=True
         )
     except Exception as e:
         return render_template('chord_progression.html', error=str(e))
@@ -190,6 +208,21 @@ def logout():
     flash('You have been logged out', 'success')
     return redirect(url_for('login')
 )
+
+@app.route('/submit_feedback', methods=['POST'])
+def submit_feedback():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    rating = int(request.form['rating'])
+    exercise_type = request.form.get('exercise_type', 'unknown')
+    with engine.connect() as conn:
+        conn.execute(
+            text("INSERT INTO feedback (user_id, exercise_type, rating) VALUES (:user_id, :exercise_type, :rating)"),
+            {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating}
+        )
+        conn.commit()
+    flash('Thank you for your feedback!', 'success')
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':

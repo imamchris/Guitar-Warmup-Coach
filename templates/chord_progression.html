@@ -36,12 +36,44 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            <form method="get">
+            <form id="nextExerciseForm">
                 <input type="hidden" name="progression_count" value="{{ progression_count }}">
-                <button type="submit" class="btn-main">Next Exercise</button>
+                <button type="submit" class="btn-main" id="nextExerciseBtn">Next Exercise</button>
             </form>
             <a href="/">Back to Home</a>
         {% endif %}
     </div>
+
+    <!-- Feedback Modal (always present, but only shown when needed) -->
+    <div id="feedbackModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:16px; padding:32px 24px; max-width:340px; margin:auto; box-shadow:0 4px 32px rgba(0,0,0,0.18); text-align:center;">
+            <form method="post" action="{{ url_for('chord_progression') }}" id="feedbackForm">
+                <label for="rating">How challenging was this exercise?</label><br>
+                <input type="range" id="rating" name="rating" min="1" max="10" value="5" oninput="document.getElementById('sliderValue').innerText = this.value;">
+                <span id="sliderValue">5</span>/10
+                <input type="hidden" name="exercise_type" value="chord_progression">
+                <input type="hidden" name="progression_count" value="{{ progression_count }}">
+                <br>
+                <button type="submit" class="btn-main" style="margin-top:18px;">Submit Feedback</button>
+            </form>
+            <button onclick="closeModal()" style="margin-top:16px; background:#ef4444; color:#fff; border:none; border-radius:8px; padding:8px 18px; font-weight:bold; cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        function closeModal() { document.getElementById('feedbackModal').style.display = 'none'; }
+
+        // Only show modal after clicking Next Exercise
+        document.addEventListener('DOMContentLoaded', function() {
+            var nextForm = document.getElementById('nextExerciseForm');
+            var feedbackModal = document.getElementById('feedbackModal');
+            if (nextForm) {
+                nextForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    feedbackModal.style.display = 'flex';
+                });
+            }
+        });
+    </script>
 </body>
 </html>
