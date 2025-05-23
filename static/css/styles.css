@@ -245,6 +245,29 @@ a:hover {
     display: none;
 }
 
+/* --- Input Fields --- */
+.input-main {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto 16px auto;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1.5px solid #2563eb;
+    background: #f0f7ff;
+    color: #222;
+    font-size: 1.1em;
+    font-family: inherit;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.07);
+    transition: border 0.2s, box-shadow 0.2s;
+}
+.input-main:focus {
+    border: 2px solid #059669;
+    outline: none;
+    background: #e0f2fe;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.13);
+}
+
 /* --- Responsive --- */
 @media (max-width: 800px) {
     .main-container { max-width: 98vw; padding: 18px 2vw 32px 2vw; }

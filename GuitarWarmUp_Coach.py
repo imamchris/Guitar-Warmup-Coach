@@ -11,11 +11,9 @@ app.secret_key = secrets.token_hex(16) # Generate a random secret key for sessio
 DATABASE_URI = 'sqlite:///users.db'
 engine = create_engine(DATABASE_URI) # Database generation if not pre-existing
 
-
 with engine.connect() as conn:
     conn.execute(text('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT UNIQUE, password_hash TEXT)'))
     conn.commit()
-
 
 # Core Functional requirements of the Application
 
@@ -24,23 +22,23 @@ scale_library = ScaleLibrary()
 
 @app.route('/')
 def index():
+    """Show the index page if logged in, otherwise redirect to login."""
+    # ... (function body can be collapsed in IDE)
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    # Render the index page (index.html)
     return render_template('index.html')
 
 @app.route('/scale_diagram', methods=['GET'])
 def scale_diagram():
+    """Show a random scale diagram, up to a maximum number."""
+    # ... (function body can be collapsed in IDE)
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    
     try:
         scale_count = int(request.args.get('scale_count', 0))
-        max_scales = 5  # Set your desired limit here
-
+        max_scales = 5
         if scale_count >= max_scales:
             return render_template('scale_TAB.html', completed=True, max_scales=max_scales)
-
         all_scales = list(scale_library.patterns.keys())
         all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
         scale_name = random.choice(all_scales)
@@ -60,28 +58,22 @@ def scale_diagram():
 
 @app.route('/chord_progression', methods=['GET'])
 def chord_progression():
+    """Show a random chord progression, up to a maximum number."""
+    # ... (function body can be collapsed in IDE)
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    
     try:
         progression_count = int(request.args.get('progression_count', 0))
-        max_progressions = 3  # You can set this to 2, 3, or 4 as you like
-
+        max_progressions = 3
         if progression_count >= max_progressions:
             return render_template('chord_progression.html', completed=True, max_progressions=max_progressions)
-
         all_chords = list(chord_library.chord_positions.keys())
-        chord_names = random.sample(all_chords, min(4, len(all_chords)))  # Select 4 random chords
-
-        # Generate chord progression data
+        chord_names = random.sample(all_chords, min(4, len(all_chords)))
         progression = chord_library.create_chord_progression(chord_names)
-
-        # Generate chord charts for each chord in the progression
         chord_svgs = []
         for chord in progression:
             svg = chord_library.draw_chord(chord["positions"], chord["fingers"], chord["name"])
             chord_svgs.append({"name": chord["name"], "svg": svg})
-
         return render_template(
             'chord_progression.html',
             progression=progression,
@@ -94,28 +86,21 @@ def chord_progression():
 
 @app.route('/daily_exercise', methods=['GET'])
 def daily_exercise():
+    """Show a daily exercise (chord progression or scale), up to a maximum per type."""
+    # ... (function body can be collapsed in IDE)
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    
-    # Get counts from query params (default to 0)
     chord_count = int(request.args.get('chord_count', 0))
     scale_count = int(request.args.get('scale_count', 0))
     max_per_type = 2
-
-    # Decide which exercise types are still available
     available_types = []
     if chord_count < max_per_type:
         available_types.append("chord_progression")
     if scale_count < max_per_type:
         available_types.append("scale")
-
-    # If all exercises are done, show completion
     if not available_types:
         return render_template('daily_exercise.html', completed=True)
-
-    # Randomly pick an available exercise type
     exercise_type = random.choice(available_types)
-
     if exercise_type == "chord_progression":
         show_chord_charts = random.choice([True, False])
         all_chords = list(chord_library.chord_positions.keys())
@@ -141,7 +126,7 @@ def daily_exercise():
             chord_count=chord_count + 1,
             scale_count=scale_count
         )
-    else:  # scale
+    else:
         all_scales = list(scale_library.patterns.keys())
         all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
         scale_name = random.choice(all_scales)
@@ -162,6 +147,8 @@ def daily_exercise():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Handle user login."""
+    # ... (function body can be collapsed in IDE)
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -178,6 +165,8 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    """Handle user signup."""
+    # ... (function body can be collapsed in IDE)
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -195,9 +184,12 @@ def signup():
 
 @app.route('/logout')
 def logout():
+    """Log the user out and clear the session."""
+    # ... (function body can be collapsed in IDE)
     session.clear()
     flash('You have been logged out', 'success')
-    return redirect(url_for('login'))
+    return redirect(url_for('login')
+)
 
 
 if __name__ == '__main__':
