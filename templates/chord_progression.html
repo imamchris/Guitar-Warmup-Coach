@@ -4,6 +4,7 @@
     <title>Chord Progression Exercises</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/feedback_modal.js') }}"></script>
 </head>
 <body>
     <div class="main-container">
@@ -60,20 +61,5 @@
         </div>
     </div>
 
-    <script>
-        function closeModal() { document.getElementById('feedbackModal').style.display = 'none'; }
-
-        // Only show modal after clicking Next Exercise
-        document.addEventListener('DOMContentLoaded', function() {
-            var nextForm = document.getElementById('nextExerciseForm');
-            var feedbackModal = document.getElementById('feedbackModal');
-            if (nextForm) {
-                nextForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    feedbackModal.style.display = 'flex';
-                });
-            }
-        });
-    </script>
 </body>
 </html>

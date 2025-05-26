@@ -4,6 +4,7 @@
     <title>Daily Exercise</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/feedback_modal.js') }}"></script>
 </head>
 <body>
     <div class="main-container">
@@ -53,7 +54,7 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            <form method="get">
+            <form id="nextDailyForm">
                 <input type="hidden" name="chord_count" value="{{ chord_count }}">
                 <input type="hidden" name="scale_count" value="{{ scale_count }}">
                 <button type="submit" class="btn-main">Next Exercise</button>
@@ -63,12 +64,30 @@
             <div class="scale-svg-container">
                 {{ scale_svg|safe }}
             </div>
-            <form method="get">
+            <form id="nextDailyForm">
                 <input type="hidden" name="chord_count" value="{{ chord_count }}">
                 <input type="hidden" name="scale_count" value="{{ scale_count }}">
                 <button type="submit" class="btn-main">Next Exercise</button>
             </form>
         {% endif %}
     </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:16px; padding:32px 24px; max-width:340px; margin:auto; box-shadow:0 4px 32px rgba(0,0,0,0.18); text-align:center;">
+            <form method="post" action="{{ url_for('submit_feedback') }}" id="feedbackForm">
+                <label for="rating">How challenging was this exercise?</label><br>
+                <input type="range" id="rating" name="rating" min="1" max="10" value="5" oninput="document.getElementById('sliderValue').innerText = this.value;">
+                <span id="sliderValue">5</span>/10
+                <input type="hidden" name="exercise_type" value="{{ exercise_type }}">
+                <input type="hidden" name="chord_count" value="{{ chord_count }}">
+                <input type="hidden" name="scale_count" value="{{ scale_count }}">
+                <br>
+                <button type="submit" class="btn-main" style="margin-top:18px;">Submit Feedback</button>
+            </form>
+            <button onclick="closeModal()" style="margin-top:16px; background:#ef4444; color:#fff; border:none; border-radius:8px; padding:8px 18px; font-weight:bold; cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+
 </body>
 </html>

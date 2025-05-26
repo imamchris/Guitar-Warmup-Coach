@@ -4,27 +4,30 @@ from sqlalchemy import create_engine, text
 import os, secrets, random
 from chordify import ChordLibrary, ScaleLibrary
 
-app = Flask(__name__) # creation of flask app
-app.secret_key = secrets.token_hex(16) # Generate a random secret key for session management
+app = Flask(__name__)
+app.secret_key = secrets.token_hex(16)
 
-# Creation of SQLite database
+# Database setup
 DATABASE_URI = 'sqlite:///users.db'
-engine = create_engine(DATABASE_URI) # Database generation if not pre-existing
+engine = create_engine(DATABASE_URI)
 
 with engine.connect() as conn:
-    conn.execute(text('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT UNIQUE, password_hash TEXT)'))
-    conn.execute(text('CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, user_id INTEGER, exercise_type TEXT, rating INTEGER)'))
+    conn.execute(text(
+        'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT UNIQUE, password_hash TEXT)'
+    ))
+    conn.execute(text(
+        'CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, user_id INTEGER, exercise_type TEXT, rating INTEGER)'
+    ))
     conn.commit()
 
 # Core Functional requirements of the Application
 
-chord_library = ChordLibrary() # Create instances of ChordLibrary and ScaleLibrary
+chord_library = ChordLibrary()
 scale_library = ScaleLibrary()
 
 @app.route('/')
 def index():
     """Show the index page if logged in, otherwise redirect to login."""
-    # ... (function body can be collapsed in IDE)
     if 'user_id' not in session:
         return redirect(url_for('login'))
     return render_template('index.html')
@@ -32,7 +35,6 @@ def index():
 @app.route('/scale_diagram', methods=['GET'])
 def scale_diagram():
     """Show a random scale diagram, up to a maximum number."""
-    # ... (function body can be collapsed in IDE)
     if 'user_id' not in session:
         return redirect(url_for('login'))
     try:
@@ -221,8 +223,22 @@ def submit_feedback():
             {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating}
         )
         conn.commit()
-    flash('Thank you for your feedback!', 'success')
-    return redirect(url_for('index'))
+    # Redirect based on exercise_type
+    if exercise_type == 'chord_progression':
+        progression_count = int(request.form.get('progression_count', 0)) + 1
+        return redirect(url_for('chord_progression', progression_count=progression_count))
+    elif exercise_type == 'scale':
+        scale_count = int(request.form.get('scale_count', 0)) + 1
+        return redirect(url_for('scale_diagram', scale_count=scale_count))
+    else:
+        # For daily_exercise, pass both counts
+        chord_count = int(request.form.get('chord_count', 0))
+        scale_count = int(request.form.get('scale_count', 0))
+        if exercise_type == 'chord_progression':
+            chord_count += 1
+        elif exercise_type == 'scale':
+            scale_count += 1
+        return redirect(url_for('daily_exercise', chord_count=chord_count, scale_count=scale_count))
 
 
 if __name__ == '__main__':
