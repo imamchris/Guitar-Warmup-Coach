@@ -4,10 +4,11 @@ from sqlalchemy import create_engine, text
 import os, secrets, random
 from chordify import ChordLibrary, ScaleLibrary
 
+# Flask App Setup
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
-# Database setup
+# Database Setup
 DATABASE_URI = 'sqlite:///users.db'
 engine = create_engine(DATABASE_URI)
 
@@ -16,14 +17,59 @@ with engine.connect() as conn:
         'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT UNIQUE, password_hash TEXT)'
     ))
     conn.execute(text(
-        'CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, user_id INTEGER, exercise_type TEXT, rating INTEGER)'
+        'CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, user_id INTEGER, exercise_type TEXT, rating INTEGER, scale_name TEXT, scale_key TEXT, shape_name TEXT)'
     ))
     conn.commit()
 
-# Core Functional requirements of the Application
-
+# Chordify Libraries
 chord_library = ChordLibrary()
 scale_library = ScaleLibrary()
+
+# Authentication Routes
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    """Handle user signup."""
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        password_hash = generate_password_hash(password)
+        try:
+            with engine.connect() as conn:
+                conn.execute(text("INSERT INTO users (username, password_hash) VALUES (:username, :password_hash)"),
+                             {'username': username, 'password_hash': password_hash})
+                conn.commit()
+            flash('Signup successful! Please login.', 'success')
+            return redirect(url_for('login'))
+        except Exception:
+            flash('Username already exists. Please choose a different one.', 'danger')
+    return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Handle user login."""
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        with engine.connect() as conn:
+            user = conn.execute(text("SELECT * FROM users WHERE username = :username"), {'username': username}).fetchone()
+            if user and check_password_hash(user.password_hash, password):
+                session['user_id'] = user.id
+                session['username'] = user.username
+                flash('Login successful!', 'success')
+                return redirect(url_for('index'))
+            else:
+                flash('Invalid username or password', 'danger')
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    """Log the user out and clear the session."""
+    session.clear()
+    flash('You have been logged out', 'success')
+    return redirect(url_for('login'))
+
+# Functional Requirements
 
 @app.route('/')
 def index():
@@ -34,7 +80,7 @@ def index():
 
 @app.route('/scale_diagram', methods=['GET'])
 def scale_diagram():
-    """Show a random scale diagram, up to a maximum number."""
+    """Show a random scale diagram, up to a maximum number, weighted by feedback."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
     try:
@@ -42,29 +88,52 @@ def scale_diagram():
         max_scales = 5
         if scale_count >= max_scales:
             return render_template('scale_TAB.html', completed=True, max_scales=max_scales)
+
         all_scales = list(scale_library.patterns.keys())
         all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
-        scale_name = random.choice(all_scales)
-        key = random.choice(all_keys)
+
+        # Build all possible (scale, key) pairs
+        scale_key_pairs = [(scale, key) for scale in all_scales for key in all_keys]
+
+        # Calculate weights: lower average rating = higher weight
+        weights = []
+        for scale_name, key in scale_key_pairs:
+            ratings = get_scale_ratings(scale_name, key)
+            if ratings:
+                avg_rating = sum(ratings) / len(ratings)
+            else:
+                avg_rating = 5  # Neutral default if no feedback
+            weight = 11 - avg_rating  # So rating 1 = weight 10, rating 10 = weight 1
+            weights.append(max(weight, 1))  # Avoid zero or negative weights
+
+        # Choose a scale/key pair based on weights
+        chosen = random.choices(scale_key_pairs, weights=weights, k=1)[0]
+        scale_name, key = chosen
+
         positions = scale_library.get_scale_positions(scale_name, key)
         scale_svg = scale_library.draw_scale(positions)
+        # You can set shape_name based on your logic or randomly for now
+        shape_name = random.choice(["barre", "open", "power", "jazz"])
+        ratings = get_scale_ratings(scale_name, key)
         return render_template(
             'scale_TAB.html',
             scale_name=scale_name,
             scale_key=key,
             scale_svg=scale_svg,
             scale_count=scale_count + 1,
-            max_scales=max_scales
+            max_scales=max_scales,
+            shape_name=shape_name,
+            ratings=ratings
         )
     except Exception as e:
         return render_template('scale_TAB.html', error=str(e))
 
 @app.route('/chord_progression', methods=['GET', 'POST'])
 def chord_progression():
+    """Show a random chord progression and handle feedback."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
     try:
-        # Get progression_count from either GET or POST
         if request.method == 'POST':
             progression_count = int(request.form.get('progression_count', 0))
         else:
@@ -72,7 +141,6 @@ def chord_progression():
         max_progressions = 3
 
         if request.method == 'POST':
-            # Handle feedback submission
             rating = int(request.form['rating'])
             with engine.connect() as conn:
                 conn.execute(
@@ -81,7 +149,7 @@ def chord_progression():
                 )
                 conn.commit()
             flash('Thank you for your feedback!', 'success')
-            progression_count += 1  # Move to next exercise
+            progression_count += 1
 
         if progression_count >= max_progressions:
             return render_template('chord_progression.html', completed=True, max_progressions=max_progressions)
@@ -107,7 +175,6 @@ def chord_progression():
 @app.route('/daily_exercise', methods=['GET'])
 def daily_exercise():
     """Show a daily exercise (chord progression or scale), up to a maximum per type."""
-    # ... (function body can be collapsed in IDE)
     if 'user_id' not in session:
         return redirect(url_for('login'))
     chord_count = int(request.args.get('chord_count', 0))
@@ -163,53 +230,7 @@ def daily_exercise():
             scale_count=scale_count + 1
         )
 
-# Signup and Login Functions
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    """Handle user login."""
-    # ... (function body can be collapsed in IDE)
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        with engine.connect() as conn:
-            user = conn.execute(text("SELECT * FROM users WHERE username = :username"), {'username': username}).fetchone()
-            if user and check_password_hash(user.password_hash, password):
-                session['user_id'] = user.id
-                session['username'] = user.username
-                flash('Login successful!', 'success')
-                return redirect(url_for('index'))
-            else:
-                flash('Invalid username or password', 'danger')
-    return render_template('login.html')
-
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    """Handle user signup."""
-    # ... (function body can be collapsed in IDE)
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        password_hash = generate_password_hash(password)
-        try:
-            with engine.connect() as conn:
-                conn.execute(text("INSERT INTO users (username, password_hash) VALUES (:username, :password_hash)"),
-                             {'username': username, 'password_hash': password_hash})
-                conn.commit()
-            flash('Signup successful! Please login.', 'success')
-            return redirect(url_for('login'))
-        except Exception:
-            flash('Username already exists. Please choose a different one.', 'danger')
-    return render_template('signup.html')
-
-@app.route('/logout')
-def logout():
-    """Log the user out and clear the session."""
-    # ... (function body can be collapsed in IDE)
-    session.clear()
-    flash('You have been logged out', 'success')
-    return redirect(url_for('login')
-)
+# Feedback Route
 
 @app.route('/submit_feedback', methods=['POST'])
 def submit_feedback():
@@ -217,11 +238,20 @@ def submit_feedback():
         return redirect(url_for('login'))
     rating = int(request.form['rating'])
     exercise_type = request.form.get('exercise_type', 'unknown')
+    scale_name = request.form.get('scale_name')
+    scale_key = request.form.get('scale_key')
+    shape_name = request.form.get('shape_name')  # NEW: get shape_name if present
     with engine.connect() as conn:
-        conn.execute(
-            text("INSERT INTO feedback (user_id, exercise_type, rating) VALUES (:user_id, :exercise_type, :rating)"),
-            {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating}
-        )
+        if exercise_type == 'scale':
+            conn.execute(
+                text("INSERT INTO feedback (user_id, exercise_type, rating, scale_name, scale_key, shape_name) VALUES (:user_id, :exercise_type, :rating, :scale_name, :scale_key, :shape_name)"),
+                {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating, 'scale_name': scale_name, 'scale_key': scale_key, 'shape_name': shape_name}
+            )
+        else:
+            conn.execute(
+                text("INSERT INTO feedback (user_id, exercise_type, rating) VALUES (:user_id, :exercise_type, :rating)"),
+                {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating}
+            )
         conn.commit()
     # Redirect based on exercise_type
     if exercise_type == 'chord_progression':
@@ -231,7 +261,6 @@ def submit_feedback():
         scale_count = int(request.form.get('scale_count', 0)) + 1
         return redirect(url_for('scale_diagram', scale_count=scale_count))
     else:
-        # For daily_exercise, pass both counts
         chord_count = int(request.form.get('chord_count', 0))
         scale_count = int(request.form.get('scale_count', 0))
         if exercise_type == 'chord_progression':
@@ -240,7 +269,27 @@ def submit_feedback():
             scale_count += 1
         return redirect(url_for('daily_exercise', chord_count=chord_count, scale_count=scale_count))
 
+def get_scale_ratings(scale_name, scale_key=None):
+    """Return a list of ratings for a given scale (and key, if provided)."""
+    with engine.connect() as conn:
+        if scale_key:
+            result = conn.execute(
+                text("SELECT rating FROM feedback WHERE exercise_type='scale' AND scale_name=:scale_name AND scale_key=:scale_key"),
+                {'scale_name': scale_name, 'scale_key': scale_key}
+            )
+        else:
+            result = conn.execute(
+                text("SELECT rating FROM feedback WHERE exercise_type='scale' AND scale_name=:scale_name"),
+                {'scale_name': scale_name}
+            )
+        ratings = [row.rating for row in result.fetchall()]
+    return ratings
+
+# Main
+
+# with engine.connect() as conn:
+#     conn.execute(text("DELETE FROM feedback"))
+#     conn.commit()
 
 if __name__ == '__main__':
     app.run(debug=True)
-
