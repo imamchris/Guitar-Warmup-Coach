@@ -80,7 +80,9 @@ def index():
 
 @app.route('/scale_diagram', methods=['GET'])
 def scale_diagram():
-    """Show a random scale diagram, up to a maximum number, weighted by feedback."""
+    """Show a random scale diagram, up to a maximum number, weighted by feedback.
+    Scales with lower (worse) feedback ratings are more likely to be selected.
+    """
     if 'user_id' not in session:
         return redirect(url_for('login'))
     try:
@@ -103,7 +105,8 @@ def scale_diagram():
                 avg_rating = sum(ratings) / len(ratings)
             else:
                 avg_rating = 5  # Neutral default if no feedback
-            weight = 11 - avg_rating  # So rating 1 = weight 10, rating 10 = weight 1
+            # Lower ratings (worse feedback) -> higher weight
+            weight = 11 - avg_rating  # e.g. rating 1 = weight 10, rating 10 = weight 1
             weights.append(max(weight, 1))  # Avoid zero or negative weights
 
         # Choose a scale/key pair based on weights
