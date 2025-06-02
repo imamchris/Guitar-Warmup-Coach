@@ -18,7 +18,7 @@
                 <p>You have completed {{ max_progressions }} chord progression exercises!</p>
                 <a href="/">Back to Home</a>
             </div>
-        {% elif progression %}
+        {% elif exercise_type == 'progression' and progression %}
             <h2>Chord Progression</h2>
             <div class="chord-grid">
                 {% for chord in chord_svgs %}
@@ -42,6 +42,19 @@
                 <button type="submit" class="btn-main" id="nextExerciseBtn">Next Exercise</button>
             </form>
             <a href="/">Back to Home</a>
+        {% elif exercise_type == 'single_chord' and single_chord_name and single_chord_svg %}
+            <h2>Single Chord Exercise</h2>
+            <div class="chord-card" style="margin: 0 auto 24px auto; max-width: 220px; box-shadow: 0 2px 12px rgba(0,0,0,0.10); border-radius: 12px; background: #fafafa;">
+                <div class="svg-container chord-svg" style="padding: 16px;">
+                    {{ single_chord_svg|safe }}
+                </div>
+                <h3 style="margin-bottom: 12px;">{{ single_chord_name }}</h3>
+            </div>
+            <form id="nextExerciseForm">
+                <input type="hidden" name="single_chord_count" value="{{ single_chord_count }}">
+                <button type="submit" class="btn-main" id="nextExerciseBtn">Next Exercise</button>
+            </form>
+            <a href="/">Back to Home</a>
         {% endif %}
     </div>
 
@@ -49,11 +62,17 @@
     <div id="feedbackModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:1000; align-items:center; justify-content:center;">
         <div style="background:#fff; border-radius:16px; padding:32px 24px; max-width:340px; margin:auto; box-shadow:0 4px 32px rgba(0,0,0,0.18); text-align:center;">
             <form method="post" action="{{ url_for('chord_progression') }}" id="feedbackForm">
-                <label for="rating">How challenging was this exercise?</label><br>
+                {% if exercise_type == 'progression' %}
+                    <label for="rating">How challenging was this progression?</label><br>
+                    <input type="hidden" name="exercise_type" value="progression">
+                {% elif exercise_type == 'single_chord' %}
+                    <label for="rating">How challenging was this chord?</label><br>
+                    <input type="hidden" name="exercise_type" value="single_chord">
+                {% endif %}
+                <input type="hidden" name="progression_count" value="{{ progression_count }}">
+                <input type="hidden" name="single_chord_count" value="{{ single_chord_count }}">
                 <input type="range" id="rating" name="rating" min="1" max="10" value="5" oninput="document.getElementById('sliderValue').innerText = this.value;">
                 <span id="sliderValue">5</span>/10
-                <input type="hidden" name="exercise_type" value="chord_progression">
-                <input type="hidden" name="progression_count" value="{{ progression_count }}">
                 <br>
                 <button type="submit" class="btn-main" style="margin-top:18px;">Submit Feedback</button>
             </form>

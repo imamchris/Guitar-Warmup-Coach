@@ -133,30 +133,47 @@ def scale_diagram():
 
 @app.route('/chord_progression', methods=['GET', 'POST'])
 def chord_progression():
-    """Show a random chord progression and handle feedback."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    try:
-        if request.method == 'POST':
-            progression_count = int(request.form.get('progression_count', 0))
-        else:
-            progression_count = int(request.args.get('progression_count', 0))
-        max_progressions = 3
 
-        if request.method == 'POST':
-            rating = int(request.form['rating'])
-            with engine.connect() as conn:
-                conn.execute(
-                    text("INSERT INTO feedback (user_id, exercise_type, rating) VALUES (:user_id, :exercise_type, :rating)"),
-                    {'user_id': session['user_id'], 'exercise_type': 'chord_progression', 'rating': rating}
-                )
-                conn.commit()
-            flash('Thank you for your feedback!', 'success')
+    # Determine which exercise to show
+    exercise_type = request.args.get('exercise_type', 'progression')
+    progression_count = int(request.args.get('progression_count', 0))
+    single_chord_count = int(request.args.get('single_chord_count', 0))
+    max_progressions = 3
+    max_single_chords = 3
+
+    # Handle feedback submission
+    if request.method == 'POST':
+        rating = int(request.form['rating'])
+        exercise_type = request.form.get('exercise_type', 'progression')
+        progression_count = int(request.form.get('progression_count', 0))
+        single_chord_count = int(request.form.get('single_chord_count', 0))
+        with engine.connect() as conn:
+            conn.execute(
+                text("INSERT INTO feedback (user_id, exercise_type, rating) VALUES (:user_id, :exercise_type, :rating)"),
+                {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating}
+            )
+            conn.commit()
+        flash('Thank you for your feedback!', 'success')
+        # Alternate exercise type after feedback
+        if exercise_type == 'progression':
             progression_count += 1
+            exercise_type = 'single_chord'
+        else:
+            single_chord_count += 1
+            exercise_type = 'progression'
+        return redirect(url_for('chord_progression', 
+                                exercise_type=exercise_type, 
+                                progression_count=progression_count, 
+                                single_chord_count=single_chord_count))
 
-        if progression_count >= max_progressions:
-            return render_template('chord_progression.html', completed=True, max_progressions=max_progressions)
+    # Completion check
+    if progression_count >= max_progressions and single_chord_count >= max_single_chords:
+        return render_template('chord_progression.html', completed=True, max_progressions=max_progressions, max_single_chords=max_single_chords)
 
+    # Show progression or single chord
+    if exercise_type == 'progression' and progression_count < max_progressions:
         all_chords = list(chord_library.chord_positions.keys())
         chord_names = random.sample(all_chords, min(4, len(all_chords)))
         progression = chord_library.create_chord_progression(chord_names)
@@ -166,14 +183,49 @@ def chord_progression():
             chord_svgs.append({"name": chord["name"], "svg": svg})
         return render_template(
             'chord_progression.html',
+            exercise_type='progression',
             progression=progression,
             chord_svgs=chord_svgs,
             progression_count=progression_count,
+            single_chord_count=single_chord_count,
             max_progressions=max_progressions,
+            max_single_chords=max_single_chords,
             show_feedback=True
         )
-    except Exception as e:
-        return render_template('chord_progression.html', error=str(e))
+    elif exercise_type == 'single_chord' and single_chord_count < max_single_chords:
+        all_chords = list(chord_library.chord_positions.keys())
+        chord_name = random.choice(all_chords)
+        chord_data = chord_library.get_chord(chord_name)
+        chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], chord_name)
+        return render_template(
+            'chord_progression.html',
+            exercise_type='single_chord',
+            single_chord_name=chord_name,
+            single_chord_svg=chord_svg,
+            progression_count=progression_count,
+            single_chord_count=single_chord_count,
+            max_progressions=max_progressions,
+            max_single_chords=max_single_chords,
+            show_feedback=True
+        )
+    else:
+        # If one type is finished, continue with the other
+        if progression_count < max_progressions:
+            return redirect(url_for('chord_progression', exercise_type='progression', progression_count=progression_count, single_chord_count=single_chord_count))
+        else:
+            return redirect(url_for('chord_progression', exercise_type='single_chord', progression_count=progression_count, single_chord_count=single_chord_count))
+
+
+# @app.route('/single_chord', methods=['GET'])
+# def single_chord():
+#     if 'user_id' not in session:
+#         return redirect(url_for('login'))
+#     all_chords = list(chord_library.chord_positions.keys())
+#     chord_name = random.choice(all_chords)
+#     chord_data = chord_library.get_chord(chord_name)
+#     chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], chord_name)
+#     return render_template('single_chord.html', chord_name=chord_name, chord_svg=chord_svg)
+
 
 @app.route('/daily_exercise', methods=['GET'])
 def daily_exercise():
@@ -287,6 +339,12 @@ def get_scale_ratings(scale_name, scale_key=None):
             )
         ratings = [row.rating for row in result.fetchall()]
     return ratings
+
+# Other
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 # Main
 
