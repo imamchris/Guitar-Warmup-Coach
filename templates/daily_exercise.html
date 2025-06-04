@@ -69,6 +69,20 @@
                 <input type="hidden" name="scale_count" value="{{ scale_count }}">
                 <button type="submit" class="btn-main">Next Exercise</button>
             </form>
+        {% elif exercise_type == "single_chord" %}
+            <h2>Single Chord Exercise</h2>
+            <div class="chord-card" style="margin: 0 auto 24px auto; max-width: 220px; box-shadow: 0 2px 12px rgba(0,0,0,0.10); border-radius: 12px; background: #fafafa;">
+                <div class="svg-container chord-svg" style="padding: 16px;">
+                    {{ chord_svg|safe }}
+                </div>
+                <h3 style="margin-bottom: 12px;">{{ chord_name }}</h3>
+            </div>
+            <form id="nextDailyForm">
+                <input type="hidden" name="chord_count" value="{{ chord_count }}">
+                <input type="hidden" name="scale_count" value="{{ scale_count }}">
+                <input type="hidden" name="chord_name" value="{{ chord_name }}">
+                <button type="submit" class="btn-main">Next Exercise</button>
+            </form>
         {% endif %}
     </div>
 

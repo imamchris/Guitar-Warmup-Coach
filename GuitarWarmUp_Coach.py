@@ -21,6 +21,26 @@ with engine.connect() as conn:
     ))
     conn.commit()
 
+with engine.connect() as conn:
+    try:
+        conn.execute(text('ALTER TABLE feedback ADD COLUMN scale_name TEXT'))
+    except Exception:
+        pass
+    try:
+        conn.execute(text('ALTER TABLE feedback ADD COLUMN scale_key TEXT'))
+    except Exception:
+        pass
+    try:
+        conn.execute(text('ALTER TABLE feedback ADD COLUMN shape_name TEXT'))
+    except Exception:
+        pass
+    try:
+        conn.execute(text('ALTER TABLE feedback ADD COLUMN chord_name TEXT'))
+    except Exception:
+        pass
+    conn.commit()
+
+
 # Chordify Libraries
 chord_library = ChordLibrary()
 scale_library = ScaleLibrary()
@@ -91,26 +111,17 @@ def scale_diagram():
         if scale_count >= max_scales:
             return render_template('scale_TAB.html', completed=True, max_scales=max_scales)
 
+        # For scales
         all_scales = list(scale_library.patterns.keys())
         all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
-
-        # Build all possible (scale, key) pairs
         scale_key_pairs = [(scale, key) for scale in all_scales for key in all_keys]
-
-        # Calculate weights: lower average rating = higher weight
         weights = []
         for scale_name, key in scale_key_pairs:
             ratings = get_scale_ratings(scale_name, key)
-            if ratings:
-                avg_rating = sum(ratings) / len(ratings)
-            else:
-                avg_rating = 5  # Neutral default if no feedback
-            # Lower ratings (worse feedback) -> higher weight
-            weight = 11 - avg_rating  # e.g. rating 1 = weight 10, rating 10 = weight 1
-            weights.append(max(weight, 1))  # Avoid zero or negative weights
-
-        # Choose a scale/key pair based on weights
+            avg_rating = sum(ratings) / len(ratings) if ratings else 5
+            weights.append(max(11 - avg_rating, 1))
         chosen = random.choices(scale_key_pairs, weights=weights, k=1)[0]
+
         scale_name, key = chosen
 
         positions = scale_library.get_scale_positions(scale_name, key)
@@ -215,56 +226,39 @@ def chord_progression():
         else:
             return redirect(url_for('chord_progression', exercise_type='single_chord', progression_count=progression_count, single_chord_count=single_chord_count))
 
-
-# @app.route('/single_chord', methods=['GET'])
-# def single_chord():
-#     if 'user_id' not in session:
-#         return redirect(url_for('login'))
-#     all_chords = list(chord_library.chord_positions.keys())
-#     chord_name = random.choice(all_chords)
-#     chord_data = chord_library.get_chord(chord_name)
-#     chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], chord_name)
-#     return render_template('single_chord.html', chord_name=chord_name, chord_svg=chord_svg)
-
-
 @app.route('/daily_exercise', methods=['GET'])
 def daily_exercise():
-    """Show a daily exercise (chord progression or scale), up to a maximum per type."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
     chord_count = int(request.args.get('chord_count', 0))
     scale_count = int(request.args.get('scale_count', 0))
-    max_per_type = 2
+    max_chords = 5  # More single chord exercises
+    max_scales = 2
+
     available_types = []
-    if chord_count < max_per_type:
-        available_types.append("chord_progression")
-    if scale_count < max_per_type:
+    if chord_count < max_chords:
+        available_types.append("single_chord")
+    if scale_count < max_scales:
         available_types.append("scale")
     if not available_types:
         return render_template('daily_exercise.html', completed=True)
+
     exercise_type = random.choice(available_types)
-    if exercise_type == "chord_progression":
-        show_chord_charts = random.choice([True, False])
+    if exercise_type == "single_chord":
         all_chords = list(chord_library.chord_positions.keys())
-        progression = random.sample(all_chords, min(4, len(all_chords)))
-        progression_data = chord_library.create_chord_progression(progression)
-        chord_svgs = []
-        hidden_chord_svgs = []
-        if show_chord_charts:
-            for chord in progression_data:
-                svg = chord_library.draw_chord(chord["positions"], chord["fingers"], chord["name"])
-                chord_svgs.append({"name": chord["name"], "svg": svg})
-        else:
-            for chord in progression_data:
-                svg = chord_library.draw_chord(chord["positions"], chord["fingers"], chord["name"])
-                hidden_chord_svgs.append({"name": chord["name"], "svg": svg})
+        weights = []
+        for chord in all_chords:
+            ratings = get_chord_ratings(chord)
+            avg_rating = sum(ratings) / len(ratings) if ratings else 5
+            weights.append(max(11 - avg_rating, 1))
+        chord_name = random.choices(all_chords, weights=weights, k=1)[0]
+        chord_data = chord_library.get_chord(chord_name)
+        chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], chord_name)
         return render_template(
             'daily_exercise.html',
             exercise_type=exercise_type,
-            progression=progression_data,
-            chord_svgs=chord_svgs,
-            hidden_chord_svgs=hidden_chord_svgs,
-            show_chord_charts=show_chord_charts,
+            chord_name=chord_name,
+            chord_svg=chord_svg,
             chord_count=chord_count + 1,
             scale_count=scale_count
         )
@@ -296,11 +290,17 @@ def submit_feedback():
     scale_name = request.form.get('scale_name')
     scale_key = request.form.get('scale_key')
     shape_name = request.form.get('shape_name')  # NEW: get shape_name if present
+    chord_name = request.form.get('chord_name')
     with engine.connect() as conn:
         if exercise_type == 'scale':
             conn.execute(
                 text("INSERT INTO feedback (user_id, exercise_type, rating, scale_name, scale_key, shape_name) VALUES (:user_id, :exercise_type, :rating, :scale_name, :scale_key, :shape_name)"),
                 {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating, 'scale_name': scale_name, 'scale_key': scale_key, 'shape_name': shape_name}
+            )
+        elif exercise_type == 'single_chord':
+            conn.execute(
+                text("INSERT INTO feedback (user_id, exercise_type, rating, chord_name) VALUES (:user_id, :exercise_type, :rating, :chord_name)"),
+                {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating, 'chord_name': chord_name}
             )
         else:
             conn.execute(
@@ -325,7 +325,6 @@ def submit_feedback():
         return redirect(url_for('daily_exercise', chord_count=chord_count, scale_count=scale_count))
 
 def get_scale_ratings(scale_name, scale_key=None):
-    """Return a list of ratings for a given scale (and key, if provided)."""
     with engine.connect() as conn:
         if scale_key:
             result = conn.execute(
@@ -337,8 +336,15 @@ def get_scale_ratings(scale_name, scale_key=None):
                 text("SELECT rating FROM feedback WHERE exercise_type='scale' AND scale_name=:scale_name"),
                 {'scale_name': scale_name}
             )
-        ratings = [row.rating for row in result.fetchall()]
-    return ratings
+        return [row.rating for row in result.fetchall()]
+
+def get_chord_ratings(chord_name):
+    with engine.connect() as conn:
+        result = conn.execute(
+            text("SELECT rating FROM feedback WHERE exercise_type='single_chord' AND chord_name=:chord_name"),
+            {'chord_name': chord_name}
+        )
+        return [row.rating for row in result.fetchall()]
 
 # Other
 
@@ -354,3 +360,4 @@ def about():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
