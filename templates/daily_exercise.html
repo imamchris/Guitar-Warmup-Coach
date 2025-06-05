@@ -80,7 +80,9 @@
             <form id="nextDailyForm">
                 <input type="hidden" name="chord_count" value="{{ chord_count }}">
                 <input type="hidden" name="scale_count" value="{{ scale_count }}">
-                <input type="hidden" name="chord_name" value="{{ chord_name }}">
+                {% if exercise_type == 'single_chord' %}
+                    <input type="hidden" name="chord_name" value="{{ chord_name if chord_name else single_chord_name }}">
+                {% endif %}
                 <button type="submit" class="btn-main">Next Exercise</button>
             </form>
         {% endif %}

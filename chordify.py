@@ -205,4 +205,4 @@ class ScaleLibrary:
 # 2. Find a a way to combine the chord charts, scales, and progressions together in one big excercise x
 # 3. Create a login system to save user data and progress x
 # 4. Create a tutorial on how to read TAB, Chord Charts, and Chord Progressions 
-# 5. Tailor the exercises to the user based on their progress and data
+# 5. Tailor the exercises to the user based on their progress and data x

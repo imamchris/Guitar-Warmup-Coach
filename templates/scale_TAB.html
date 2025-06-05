@@ -33,19 +33,6 @@
             <a href="/">Back to Home</a>
         {% endif %}
 
-        {% if ratings %}
-            <div class="scale-feedback">
-                <h3>Previous Ratings for this Pattern:</h3>
-                <ul>
-                    {% for r in ratings %}
-                        <li>Rating: {{ r }}</li>
-                    {% endfor %}
-                </ul>
-                <p>Average Rating: {{ ratings|sum / ratings|length if ratings|length > 0 else 'N/A' }}</p>
-            </div>
-        {% else %}
-            <p class="scale-feedback">No feedback yet for this pattern.</p>
-        {% endif %}
     </div>
 
     <!-- Feedback Modal -->

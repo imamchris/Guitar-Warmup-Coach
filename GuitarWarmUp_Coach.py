@@ -21,26 +21,6 @@ with engine.connect() as conn:
     ))
     conn.commit()
 
-with engine.connect() as conn:
-    try:
-        conn.execute(text('ALTER TABLE feedback ADD COLUMN scale_name TEXT'))
-    except Exception:
-        pass
-    try:
-        conn.execute(text('ALTER TABLE feedback ADD COLUMN scale_key TEXT'))
-    except Exception:
-        pass
-    try:
-        conn.execute(text('ALTER TABLE feedback ADD COLUMN shape_name TEXT'))
-    except Exception:
-        pass
-    try:
-        conn.execute(text('ALTER TABLE feedback ADD COLUMN chord_name TEXT'))
-    except Exception:
-        pass
-    conn.commit()
-
-
 # Chordify Libraries
 chord_library = ChordLibrary()
 scale_library = ScaleLibrary()
@@ -160,10 +140,11 @@ def chord_progression():
         exercise_type = request.form.get('exercise_type', 'progression')
         progression_count = int(request.form.get('progression_count', 0))
         single_chord_count = int(request.form.get('single_chord_count', 0))
+        chord_name = request.form.get('chord_name')
         with engine.connect() as conn:
             conn.execute(
-                text("INSERT INTO feedback (user_id, exercise_type, rating) VALUES (:user_id, :exercise_type, :rating)"),
-                {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating}
+                text("INSERT INTO feedback (user_id, exercise_type, rating, chord_name) VALUES (:user_id, :exercise_type, :rating, :chord_name)"),
+                {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating, 'chord_name': chord_name}
             )
             conn.commit()
         flash('Thank you for your feedback!', 'success')
@@ -352,11 +333,26 @@ def get_chord_ratings(chord_name):
 def about():
     return render_template('about.html')
 
+@app.route('/tutorial')
+def tutorial():
+    # Example: Show the "A" chord chart
+    chord_name = "A"
+    chord_data = chord_library.get_chord(chord_name)
+    chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], chord_name)
+
+    # Example: Show a Minor Pentatonic scale in E
+    scale_name = "Minor Pentatonic"
+    scale_key = "A"
+    scale_positions = scale_library.get_scale_positions(scale_name, scale_key)
+    scale_svg = scale_library.draw_scale(scale_positions)
+
+    return render_template('tutorial.html', chord_svg=chord_svg, scale_svg=scale_svg)
+
 # Main
 
-# with engine.connect() as conn:
-#     conn.execute(text("DELETE FROM feedback"))
-#     conn.commit()
+with engine.connect() as conn:
+    conn.execute(text("DELETE FROM feedback"))
+    conn.commit()
 
 if __name__ == '__main__':
     app.run(debug=True)
