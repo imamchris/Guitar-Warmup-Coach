@@ -45,10 +45,10 @@
         {% elif exercise_type == 'single_chord' and single_chord_name and single_chord_svg %}
             <h2>Single Chord Exercise</h2>
             <div class="chord-card" style="margin: 0 auto 24px auto; max-width: 220px; box-shadow: 0 2px 12px rgba(0,0,0,0.10); border-radius: 12px; background: #fafafa;">
-                <div class="svg-container chord-svg" style="padding: 16px;">
+                <div class="svg-container chord-svg" style="padding-right: 35px;">
                     {{ single_chord_svg|safe }}
                 </div>
-                <h3 style="margin-bottom: 12px;">{{ single_chord_name }}</h3>
+                <!-- <h3 style="margin-bottom: 12px;">{{ single_chord_name }}</h3> -->
             </div>
             <form id="nextExerciseForm">
                 <input type="hidden" name="single_chord_count" value="{{ single_chord_count }}">

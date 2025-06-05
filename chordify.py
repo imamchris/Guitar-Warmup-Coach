@@ -18,20 +18,23 @@ class ChordLibrary:
         return self.chord_positions[chord_name]
 
     def draw_chord(self, frets, fingers, chord_name=""):
+        # Define the size of the SVG which contains the chord chart
         top_margin = 20
         svg = [
-            '<svg width="200" height="280" xmlns="http://www.w3.org/2000/svg">',
+            '<svg width="200" height="250" xmlns="http://www.w3.org/2000/svg">',
             f'<text x="115" y="{top_margin}" text-anchor="middle" font-size="20" font-weight="bold" fill="black">{chord_name}</text>',
         ]
         # Draw strings
         for string_index in range(6):
             string_x = 40 + (string_index * 30)
             svg.append(f'<line x1="{string_x}" y1="{50+top_margin}" x2="{string_x}" y2="{210+top_margin}" stroke="black" stroke-width="2"/>')
+        
         # Draw frets
         for fret_index in range(5):
             fret_y = 50 + (fret_index * 40) + top_margin
             svg.append(f'<line x1="40" y1="{fret_y}" x2="190" y2="{fret_y}" stroke="black" stroke-width="3"/>')
         svg.append(f'<line x1="39" y1="{50+top_margin}" x2="191" y2="{50+top_margin}" stroke="black" stroke-width="5"/>')
+        
         # Open/muted strings
         for string_index, fret in enumerate(frets):
             string_x = 40 + (string_index * 30)
@@ -39,6 +42,7 @@ class ChordLibrary:
                 svg.append(f'<text x="{string_x}" y="{40+top_margin}" text-anchor="middle" font-size="12" fill="black">O</text>')
             elif fret == -1:
                 svg.append(f'<text x="{string_x}" y="{40+top_margin}" text-anchor="middle" font-size="12" fill="black">X</text>')
+        
         # Finger positions
         for string_index, fret in enumerate(frets):
             string_x = 40 + (string_index * 30)
@@ -48,6 +52,7 @@ class ChordLibrary:
                 finger = fingers[string_index]
                 if finger > 0:
                     svg.append(f'<text x="{string_x}" y="{fret_y + 4}" text-anchor="middle" font-size="10" fill="white">{finger}</text>')
+        
         svg.append('</svg>')
         return "\n".join(svg)
 
@@ -204,5 +209,5 @@ class ScaleLibrary:
 # 1. Make a simple dashboard to display a basic interface to access 'daily exercises' X
 # 2. Find a a way to combine the chord charts, scales, and progressions together in one big excercise x
 # 3. Create a login system to save user data and progress x
-# 4. Create a tutorial on how to read TAB, Chord Charts, and Chord Progressions 
+# 4. Create a tutorial on how to read TAB, Chord Charts, and Chord Progressions x
 # 5. Tailor the exercises to the user based on their progress and data x

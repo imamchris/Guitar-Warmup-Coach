@@ -12,7 +12,7 @@ body {
 .main-container {
     max-width: 900px;
     margin: 48px auto 0 auto;
-    background: rgba(255,255,255,0.92);
+    background: rgba(255, 255, 255, 0.92);
     border-radius: 26px;
     box-shadow: 0 8px 32px rgba(52, 144, 220, 0.13);
     padding: 48px 32px 56px 32px;
@@ -34,6 +34,7 @@ h1 {
     font-weight: 800;
     text-shadow: 0 2px 8px #e0e7ff;
 }
+
 h2 {
     text-align: center;
     margin-bottom: 28px;
@@ -41,6 +42,7 @@ h2 {
     color: #059669;
     font-weight: 700;
 }
+
 .scale-title {
     font-size: 1.3em;
     font-weight: bold;
@@ -53,6 +55,7 @@ h2 {
 nav {
     margin-bottom: 24px;
 }
+
 nav a {
     color: #2563eb;
     font-weight: 600;
@@ -61,9 +64,11 @@ nav a {
     font-size: 1.1em;
     transition: color 0.2s;
 }
+
 nav a:hover {
     color: #059669;
 }
+
 .section-list {
     display: flex;
     flex-wrap: wrap;
@@ -71,10 +76,11 @@ nav a:hover {
     gap: 32px;
     margin: 36px 0 24px 0;
 }
+
 .section {
     background: #f9fafb;
     border-radius: 18px;
-    box-shadow: 0 2px 16px rgba(99,102,241,0.08);
+    box-shadow: 0 2px 16px rgba(99, 102, 241, 0.08);
     padding: 24px 18px 18px 18px;
     min-width: 220px;
     max-width: 260px;
@@ -83,10 +89,12 @@ nav a:hover {
     align-items: center;
     transition: transform 0.18s, box-shadow 0.18s;
 }
+
 .section:hover {
     transform: translateY(-6px) scale(1.03);
-    box-shadow: 0 8px 32px rgba(99,102,241,0.13);
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.13);
 }
+
 .button-link {
     display: inline-block;
     background: #2563eb;
@@ -100,12 +108,14 @@ nav a:hover {
     margin-top: 8px;
     text-decoration: none;
     transition: background 0.2s, transform 0.15s;
-    box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.10);
 }
+
 .button-link:hover {
     background: #1d4ed8;
     transform: scale(1.05);
 }
+
 .section img {
     width: 100%;
     max-width: 180px;
@@ -113,16 +123,19 @@ nav a:hover {
     margin-top: 10px;
     box-shadow: 0 2px 8px rgba(52, 144, 220, 0.10);
 }
+
 footer {
     margin-top: 48px;
     color: #64748b;
     font-size: 1em;
 }
+
 footer a {
     color: #2563eb;
     text-decoration: underline;
     font-weight: 500;
 }
+
 footer a:hover {
     color: #059669;
 }
@@ -139,9 +152,11 @@ footer a:hover {
     letter-spacing: 2px;
     color: #1e293b;
 }
+
 .slash {
     color: #007bff;
 }
+
 .chord-grid {
     display: flex;
     flex-wrap: wrap;
@@ -149,26 +164,29 @@ footer a:hover {
     gap: 48px;
     margin: 36px 0 24px 0;
 }
+
 .chord-card {
     background: #f9fafb;
     border-radius: 22px;
-    box-shadow: 0 2px 16px rgba(99,102,241,0.10);
-    padding: 48px 18px 32px 18px;
+    box-shadow: 0 2px 16px rgba(99, 102, 241, 0.10);
+    padding: 12px 18px 18px 5px;
     min-width: 220px;
     max-width: 240px;
-    min-height: 320px;
+    min-height: 240px;
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: transform 0.18s, box-shadow 0.18s;
 }
+
 .chord-card:hover {
     transform: translateY(-6px) scale(1.03);
-    box-shadow: 0 8px 32px rgba(99,102,241,0.13);
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.13);
 }
+
 .svg-container.chord-svg {
     width: 200px;
-    height: 260px;
+    height: 200px;
     margin: 0 auto 0 auto;
     display: flex;
     align-items: flex-start;
@@ -188,6 +206,7 @@ footer a:hover {
     padding: 24px 0;
     overflow-x: auto;
 }
+
 .scale-svg-container svg {
     width: 100%;
     height: auto;
@@ -197,7 +216,8 @@ footer a:hover {
 }
 
 /* --- Buttons --- */
-.btn-main, button {
+.btn-main,
+button {
     display: block;
     background: #2563eb;
     color: #fff;
@@ -209,12 +229,14 @@ footer a:hover {
     margin: 48px auto 0 auto;
     cursor: pointer;
     transition: background 0.2s, transform 0.15s, box-shadow 0.18s;
-    box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.10);
 }
-.btn-main:hover, button:hover {
+
+.btn-main:hover,
+button:hover {
     background: #1d4ed8;
     transform: scale(1.05);
-    box-shadow: 0 6px 24px rgba(37,99,235,0.18);
+    box-shadow: 0 6px 24px rgba(37, 99, 235, 0.18);
 }
 
 /* --- Completion & Error --- */
@@ -222,6 +244,7 @@ footer a:hover {
     text-align: center;
     margin-top: 60px;
 }
+
 .error {
     color: #ef4444;
     font-size: 1.1em;
@@ -238,9 +261,11 @@ a {
     display: inline-block;
     transition: color 0.2s;
 }
+
 a:hover {
     color: #059669;
 }
+
 .hidden {
     display: none;
 }
@@ -258,28 +283,56 @@ a:hover {
     color: #222;
     font-size: 1.1em;
     font-family: inherit;
-    box-shadow: 0 2px 8px rgba(37,99,235,0.07);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.07);
     transition: border 0.2s, box-shadow 0.2s;
 }
+
 .input-main:focus {
     border: 2px solid #059669;
     outline: none;
     background: #e0f2fe;
-    box-shadow: 0 4px 16px rgba(37,99,235,0.13);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.13);
 }
 
 /* --- Responsive --- */
 @media (max-width: 800px) {
-    .main-container { max-width: 98vw; padding: 18px 2vw 32px 2vw; }
-    .section-list { gap: 18px; }
-    .section { min-width: 130px; max-width: 98vw; }
-    .section img { max-width: 120px; }
+    .main-container {
+        max-width: 98vw;
+        padding: 18px 2vw 32px 2vw;
+    }
+    .section-list {
+        gap: 18px;
+    }
+    .section {
+        min-width: 130px;
+        max-width: 98vw;
+    }
+    .section img {
+        max-width: 120px;
+    }
 }
+
 @media (max-width: 700px) {
-    .main-container { padding: 18px 4vw 32px 4vw; }
-    .chord-grid { gap: 18px; }
-    .chord-row { gap: 10px; font-size: 1.1em; }
-    .chord-card { min-width: 140px; max-width: 170px; padding: 18px 4px 18px 4px; }
-    .svg-container.chord-svg { width: 120px; height: 140px; }
-    .scale-svg-container { max-width: 96vw; }
+    .main-container {
+        padding: 18px 4vw 32px 4vw;
+    }
+    .chord-grid {
+        gap: 18px;
+    }
+    .chord-row {
+        gap: 10px;
+        font-size: 1.1em;
+    }
+    .chord-card {
+        min-width: 140px;
+        max-width: 170px;
+        padding: 18px 4px 18px 4px;
+    }
+    .svg-container.chord-svg {
+        width: 120px;
+        height: 140px;
+    }
+    .scale-svg-container {
+        max-width: 96vw;
+    }
 }
