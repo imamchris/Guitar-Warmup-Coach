@@ -1,7 +1,16 @@
 class ChordLibrary:
     def __init__(self):
-        # Define chord positions and fingerings NOTE: Strings ordered EADGBE, Notes (including muted) are indicated in positions
+        # Chord definitions. Barre chords have a 'barre' key.
         self.chord_positions = {
+            "F": {"positions": [1, 3, 3, 2, 0, 1],"fingers": [1, 3, 4, 2, 0, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
+            "C": {"positions": [-1, 1, 3, 3, 3, 1],"fingers": [0, 1, 2, 3, 4, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
+            "Fm": {"positions": [1, 3, 3, 0, 0, 1],"fingers": [1, 3, 4, 0, 0, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
+            "Cm": {"positions": [-1, 1, 3, 3, 2, 1],"fingers": [0, 1, 3, 4, 2, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
+            "Fsus4": {"positions": [1, 3, 3, 3, 0, 1],"fingers": [1, 2, 3, 4, 0, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
+            "Csus4": {"positions": [-1, 1, 3, 3, 4, 1],"fingers": [0, 1, 2, 3, 4, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
+            "F7": {"positions": [1, 0, 2, 3, 1, -1],"fingers": [1, 0, 2, 3, 1, 0], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
+
+
             "G": {"positions": [3, 2, 0, 0, 3, 3], "fingers": [2, 1, 0, 0, 3, 4]},
             "C": {"positions": [-1, 3, 2, 0, 1, 0], "fingers": [0, 3, 2, 0, 1, 0]},
             "D": {"positions": [-1, -1, 0, 2, 3, 2], "fingers": [0, 0, 0, 1, 3, 2]},
@@ -9,16 +18,40 @@ class ChordLibrary:
             "A": {"positions": [-1, 0, 2, 2, 2, 0], "fingers": [0, 0, 1, 2, 3, 0]},
             "B": {"positions": [-1, 2, 4, 4, 4, 2], "fingers": [0, 1, 3, 4, 2, 1]},
             "E": {"positions": [0, 2, 2, 1, 0, 0], "fingers": [0, 2, 3, 1, 0, 0]},
+
+
+            
+            # Add more barre chords as needed...
         }
 
     def get_chord(self, chord_name):
-        """Retrieve chord positions and fingerings."""
-        if chord_name not in self.chord_positions:
-            raise ValueError(f"Chord '{chord_name}' not found in library.")
+        """Get chord data by name."""
         return self.chord_positions[chord_name]
 
-    def draw_chord(self, frets, fingers, chord_name=""):
-        # Define the size of the SVG which contains the chord chart
+    def get_movable_chord(self, base_name, fret):
+        """
+        Move a barre chord shape to a new fret.
+        Only works for chords with a 'barre' key.
+        """
+        base = self.get_chord(base_name)
+        if "barre" not in base:
+            raise ValueError("Not a movable barre chord.")
+        shift = fret - base["barre"]["fret"]
+        # Shift all positions by the fret difference
+        new_positions = [
+            (p + shift if p not in (None, -1, 0) else p)
+            for p in base["positions"]
+        ]
+        # Update barre info
+        new_barre = base["barre"].copy()
+        new_barre["fret"] = fret
+        return {
+            "positions": new_positions,
+            "fingers": base["fingers"],
+            "barre": new_barre
+        }
+
+    def draw_chord(self, frets, fingers, chord_name="", barre=None):
         top_margin = 20
         svg = [
             '<svg width="200" height="250" xmlns="http://www.w3.org/2000/svg">',
@@ -35,6 +68,14 @@ class ChordLibrary:
             svg.append(f'<line x1="40" y1="{fret_y}" x2="190" y2="{fret_y}" stroke="black" stroke-width="3"/>')
         svg.append(f'<line x1="39" y1="{50+top_margin}" x2="191" y2="{50+top_margin}" stroke="black" stroke-width="5"/>')
         
+        # Draw barre if present
+        if barre:
+            fret = barre["fret"]
+            from_x = 40 + (barre["from_string"] * 30)
+            to_x = 40 + (barre["to_string"] * 30)
+            y = 50 + ((fret - 1) * 40) + 20 + top_margin
+            svg.append(f'<rect x="{from_x-7}" y="{y-8}" width="{to_x-from_x+14}" height="16" rx="8" fill="#222" opacity="0.7"/>')
+
         # Open/muted strings
         for string_index, fret in enumerate(frets):
             string_x = 40 + (string_index * 30)
