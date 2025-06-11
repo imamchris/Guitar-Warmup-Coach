@@ -185,18 +185,19 @@ footer a:hover {
 }
 
 .svg-container.chord-svg {
-    width: 200px;
+    width: 200px; /* Change this value to adjust the width */
     height: 200px;
     margin: 0 auto 0 auto;
     display: flex;
     align-items: flex-start;
     justify-content: center;
+    padding-right: 25px;
 }
 
 /* --- Scale SVG Container --- */
 .scale-svg-container {
-    width: 100%;
-    max-width: 520px;
+    width: 100%; /* Change this value or max-width below */
+    max-width: 500px; /* Change this value to adjust the maximum width */
     margin: 0 auto 36px auto;
     display: flex;
     justify-content: center;
@@ -208,10 +209,10 @@ footer a:hover {
 }
 
 .scale-svg-container svg {
-    width: 100%;
+    width: 100%; /* Change this value or max-width below */
     height: auto;
-    max-width: 500px;
-    min-width: 350px;
+    max-width: 500px; /* Change this value to adjust the SVG's maximum width */
+    min-width: 500px;
     display: block;
 }
 

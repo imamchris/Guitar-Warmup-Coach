@@ -19,7 +19,7 @@
                 <a href="/">Back to Home</a>
             </div>
         {% elif exercise_type == 'progression' and progression %}
-            <h2>Chord Progression</h2>
+            <h2>Chord Progression</h2> <!--CHORD PROGRESSION-->
             <div class="chord-grid">
                 {% for chord in chord_svgs %}
                     <div class="chord-card">
@@ -37,24 +37,25 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            <form id="nextExerciseForm">
+            <form id="nextExerciseForm"> <!--FORM FOR NEXT EXERCISE-->
                 <input type="hidden" name="progression_count" value="{{ progression_count }}">
                 <button type="submit" class="btn-main" id="nextExerciseBtn">Next Exercise</button>
             </form>
             <a href="/">Back to Home</a>
-        {% elif exercise_type == 'single_chord' and single_chord_name and single_chord_svg %}
+
+        {% elif exercise_type == 'single_chord' and single_chord_name and single_chord_svg %} <!--SINGLE CHORD EXERCISE-->
             <h2>Single Chord Exercise</h2>
             <div class="chord-card" style="margin: 0 auto 24px auto; max-width: 220px; box-shadow: 0 2px 12px rgba(0,0,0,0.10); border-radius: 12px; background: #fafafa;">
                 <div class="svg-container chord-svg" style="padding-right: 35px;">
                     {{ single_chord_svg|safe }}
                 </div>
-                <!-- <h3 style="margin-bottom: 12px;">{{ single_chord_name }}</h3> -->
+
             </div>
             <form id="nextExerciseForm">
                 <input type="hidden" name="single_chord_count" value="{{ single_chord_count }}">
                 <button type="submit" class="btn-main" id="nextExerciseBtn">Next Exercise</button>
             </form>
-            <a href="/" class="btn-main" style="margin-top: 18px;">Back to Home</a>
+            <a href="/">Back to Home</a>
         {% endif %}
     </div>
 
