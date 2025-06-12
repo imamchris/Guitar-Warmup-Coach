@@ -2,8 +2,8 @@ class ChordLibrary:
     def __init__(self):
         # Chord definitions. Barre chords have a 'barre' key.
         self.chord_positions = {
-            "F": {"positions": [1, 3, 3, 2, 0, 1],"fingers": [1, 3, 4, 2, 0, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
-            "C": {"positions": [-1, 1, 3, 3, 3, 1],"fingers": [0, 1, 2, 3, 4, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
+            "F": {"positions": [1, 3, 3, 2, 0, 1],"fingers": [1, 3, 4, 2, 0, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}, "level": "intermediate"},
+            "C": {"positions": [-1, 1, 3, 3, 3, 1],"fingers": [0, 1, 2, 3, 4, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}, "level": "beginner"},
             "Fm": {"positions": [1, 3, 3, 0, 0, 1],"fingers": [1, 3, 4, 0, 0, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
             "Cm": {"positions": [-1, 1, 3, 3, 2, 1],"fingers": [0, 1, 3, 4, 2, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
             "Fsus4": {"positions": [1, 3, 3, 3, 0, 1],"fingers": [1, 2, 3, 4, 0, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
@@ -11,12 +11,12 @@ class ChordLibrary:
             "F7": {"positions": [1, 0, 2, 3, 1, -1],"fingers": [1, 0, 2, 3, 1, 0], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
 
 
-            "G": {"positions": [3, 2, 0, 0, 3, 3], "fingers": [2, 1, 0, 0, 3, 4]},
-            "C": {"positions": [-1, 3, 2, 0, 1, 0], "fingers": [0, 3, 2, 0, 1, 0]},
+            "G": {"positions": [3, 2, 0, 0, 3, 3], "fingers": [2, 1, 0, 0, 3, 4], "level": "beginner"},
+            "C": {"positions": [-1, 3, 2, 0, 1, 0], "fingers": [0, 3, 2, 0, 1, 0], "level": "beginner"},
             "D": {"positions": [-1, -1, 0, 2, 3, 2], "fingers": [0, 0, 0, 1, 3, 2]},
             "Em": {"positions": [0, 2, 2, 0, 0, 0], "fingers": [0, 2, 3, 0, 0, 0]},
             "A": {"positions": [-1, 0, 2, 2, 2, 0], "fingers": [0, 0, 1, 2, 3, 0]},
-            "B": {"positions": [-1, 2, 4, 4, 4, 2], "fingers": [0, 1, 3, 4, 2, 1]},
+            "B": {"positions": [-1, 2, 4, 4, 4, 2], "fingers": [0, 1, 3, 4, 2, 1], "level": "intermediate"},
             "E": {"positions": [0, 2, 2, 1, 0, 0], "fingers": [0, 2, 3, 1, 0, 0]},
 
 
@@ -124,51 +124,63 @@ class ScaleLibrary:
     STRING_TUNINGS = ["E", "A", "D", "G", "B", "E"]
 
     def __init__(self):
-        # Patterns written as if root is at 3rd fret (G) on low E string
+        # Each scale now has a pattern and a minimum skill level
         self.patterns = {
-            "Minor Pentatonic": [
-                [3, 6],  # High E string
-                [3, 6],  # A string
-                [3, 5],  # D string
-                [3, 5],  # G string
-                [3, 5],  # B string
-                [3, 6],  # Low E string
-            ],
-            "Major Pentatonic": [
-                [2, 3, 5],
-                [3, 5],
-                [2, 4, 5],
-                [2, 4, 5],
-                [2, 3, 5],
-                [3, 5],  
-            ],
-
-            "Blues Scales": [
-                [3, 6],  
-                [3, 6],
-                [3, 5, 6],  
-                [3, 5],  
-                [3, 4, 5],  
-                [3, 6],  
-            ],
-
-            "Major Scale": [
-                [2, 5],
-                [2, 5],
-                [2, 4],
-                [2, 4], 
-                [2, 4],
-                [5], 
-            ],
-
-            "Natural Minor Scale": [
-                [3, 5, 6],
-                [3, 4, 6],
-                [2, 3, 5],
-                [3, 5],
-                [3, 5, 6],
-                [3, 5, 6],
-            ]
+            "Minor Pentatonic": {
+                "positions": [
+                    [3, 6],  # High E string
+                    [3, 6],  # A string
+                    [3, 5],  # D string
+                    [3, 5],  # G string
+                    [3, 5],  # B string
+                    [3, 6],  # Low E string
+                ],
+                "level": "beginner"
+            },
+            "Major Pentatonic": {
+                "positions": [
+                    [2, 3, 5],
+                    [3, 5],
+                    [2, 4, 5],
+                    [2, 4, 5],
+                    [2, 3, 5],
+                    [3, 5],
+                ],
+                "level": "beginner"
+            },
+            "Blues Scales": {
+                "positions": [
+                    [3, 6],
+                    [3, 6],
+                    [3, 5, 6],
+                    [3, 5],
+                    [3, 4, 5],
+                    [3, 6],
+                ],
+                "level": "intermediate"
+            },
+            "Major Scale": {
+                "positions": [
+                    [2, 5],
+                    [2, 5],
+                    [2, 4],
+                    [2, 4],
+                    [2, 4],
+                    [5],
+                ],
+                "level": "intermediate"
+            },
+            "Natural Minor Scale": {
+                "positions": [
+                    [3, 5, 6],
+                    [3, 4, 6],
+                    [2, 3, 5],
+                    [3, 5],
+                    [3, 5, 6],
+                    [3, 5, 6],
+                ],
+                "level": "expert"
+            }
         }
 
     def get_scale_positions(self, pattern_name, key, root_string=0):
@@ -252,3 +264,6 @@ class ScaleLibrary:
 # 3. Create a login system to save user data and progress x
 # 4. Create a tutorial on how to read TAB, Chord Charts, and Chord Progressions x
 # 5. Tailor the exercises to the user based on their progress and data x
+
+# 6. Add a way to change the skill level of the overall experience (i.e. beginner, intermediate, advanced)
+# 7. Create profile page, maybe a dropdown

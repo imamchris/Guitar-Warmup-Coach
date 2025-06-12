@@ -19,6 +19,10 @@ with engine.connect() as conn:
     conn.execute(text(
         'CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, user_id INTEGER, exercise_type TEXT, rating INTEGER, scale_name TEXT, scale_key TEXT, shape_name TEXT)'
     ))
+    try:
+        conn.execute(text('ALTER TABLE users ADD COLUMN skill_level TEXT'))
+    except Exception:
+        pass
     conn.commit()
 
 # Chordify Libraries
@@ -56,6 +60,7 @@ def login():
             if user and check_password_hash(user.password_hash, password):
                 session['user_id'] = user.id
                 session['username'] = user.username
+                session['skill_level'] = user['skill_level'] if 'skill_level' in user else None
                 flash('Login successful!', 'success')
                 return redirect(url_for('index'))
             else:
@@ -91,8 +96,9 @@ def scale_diagram():
         if scale_count >= max_scales:
             return render_template('scale_TAB.html', completed=True, max_scales=max_scales)
 
-        # For scales
-        all_scales = list(scale_library.patterns.keys())
+        # Filter by skill level
+        skill_level = session.get('skill_level', 'beginner')
+        all_scales = scale_library.get_available_scales(skill_level)
         all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
         scale_key_pairs = [(scale, key) for scale in all_scales for key in all_keys]
         weights = []
@@ -226,7 +232,8 @@ def daily_exercise():
 
     exercise_type = random.choice(available_types)
     if exercise_type == "single_chord":
-        all_chords = list(chord_library.chord_positions.keys())
+        skill_level = session.get('skill_level', 'beginner')
+        all_chords = get_available_chords(skill_level)
         weights = []
         for chord in all_chords:
             ratings = get_chord_ratings(chord)
@@ -243,8 +250,9 @@ def daily_exercise():
             chord_count=chord_count + 1,
             scale_count=scale_count
         )
-    else:
-        all_scales = list(scale_library.patterns.keys())
+    else:  # scale
+        skill_level = session.get('skill_level', 'beginner')
+        all_scales = scale_library.get_available_scales(skill_level)
         all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
         scale_name = random.choice(all_scales)
         key = random.choice(all_keys)
@@ -259,6 +267,35 @@ def daily_exercise():
             chord_count=chord_count,
             scale_count=scale_count + 1
         )
+
+@app.route('/tutorial')
+def tutorial():
+    # Example: Show the "A" chord chart
+    chord_name = "A"
+    chord_data = chord_library.get_chord(chord_name)
+    chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], chord_name)
+
+    # Example: Show a Minor Pentatonic scale in E
+    scale_name = "Minor Pentatonic"
+    scale_key = "A"
+    scale_positions = scale_library.get_scale_positions(scale_name, scale_key)
+    scale_svg = scale_library.draw_scale(scale_positions)
+
+    return render_template('tutorial.html', chord_svg=chord_svg, scale_svg=scale_svg)
+
+@app.route('/set_skill_level', methods=['POST'])
+def set_skill_level():
+    if 'user_id' not in session:
+        return '', 401
+    level = request.json.get('level')
+    with engine.connect() as conn:
+        conn.execute(
+            text("UPDATE users SET skill_level=:level WHERE id=:user_id"),
+            {'level': level, 'user_id': session['user_id']}
+        )
+        conn.commit()
+    session['skill_level'] = level
+    return '', 204
 
 # Feedback Route
 
@@ -327,26 +364,20 @@ def get_chord_ratings(chord_name):
         )
         return [row.rating for row in result.fetchall()]
 
+def get_available_chords(skill_level):
+    # Example: filter by skill level
+    if skill_level == 'beginner':
+        return [name for name, data in chord_library.chord_positions.items() if data.get('level', 'beginner') == 'beginner']
+    elif skill_level == 'intermediate':
+        return [name for name, data in chord_library.chord_positions.items() if data.get('level', 'beginner') in ['beginner', 'intermediate']]
+    else:
+        return list(chord_library.chord_positions.keys())
+
 # Other
 
 @app.route('/about')
 def about():
     return render_template('about.html')
-
-@app.route('/tutorial')
-def tutorial():
-    # Example: Show the "A" chord chart
-    chord_name = "A"
-    chord_data = chord_library.get_chord(chord_name)
-    chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], chord_name)
-
-    # Example: Show a Minor Pentatonic scale in E
-    scale_name = "Minor Pentatonic"
-    scale_key = "A"
-    scale_positions = scale_library.get_scale_positions(scale_name, scale_key)
-    scale_svg = scale_library.draw_scale(scale_positions)
-
-    return render_template('tutorial.html', chord_svg=chord_svg, scale_svg=scale_svg)
 
 # Main
 

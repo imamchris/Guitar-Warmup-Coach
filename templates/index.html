@@ -40,5 +40,25 @@
             <p>© 2023 Guitar Warmup Coach | <a href="/privacy">Privacy Policy</a></p>
         </footer>
     </div>
+    {% if session.get('skill_level') is none %}
+    <div id="skillLevelModal" class="modal"
+         style="display:flex; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:1000; align-items:center; justify-content:center;">
+      <div style="background:#fff; border-radius:16px; padding:30px 24px; max-width:340px; box-shadow:0 4px 32px rgba(0,0,0,0.18); text-align:center;">
+        <h2>Select Your Skill Level</h2>
+        <button onclick="setSkillLevel('beginner')" class="btn-main">Beginner</button>
+        <button onclick="setSkillLevel('intermediate')" class="btn-main">Intermediate</button>
+        <button onclick="setSkillLevel('expert')" class="btn-main">Expert</button>
+      </div>
+    </div>
+    <script>
+    function setSkillLevel(level) {
+        fetch('/set_skill_level', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({level: level})
+        }).then(() => location.reload());
+    }
+    </script>
+    {% endif %}
 </body>
 </html>
