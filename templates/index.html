@@ -14,8 +14,7 @@
             <h1>Guitar Warmup Coach</h1>
             <nav>
                 <a href="/about">About</a>
-                <a href="/account">Account</a>
-                <a href="/logout">Logout</a> <!-- Add this line -->
+                <a href="/preferences" class="settings-btn">Settings</a>
             </nav>
         </header>
         <div class="section-list">
@@ -51,14 +50,30 @@
       </div>
     </div>
     <script>
-    function setSkillLevel(level) {
-        fetch('/set_skill_level', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({level: level})
-        }).then(() => location.reload());
-    }
+        function setSkillLevel(level) {
+            fetch('/set_skill_level', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({level: level})
+            }).then(() => location.reload());
+        }
     </script>
     {% endif %}
+    <script>
+function toggleDropdown(event) {
+    event.preventDefault();
+    var dropdown = document.getElementById('accountDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+}
+// Optional: close dropdown when clicking outside
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdown = document.getElementById('accountDropdown');
+    if (dropdown && dropdown.style.display === 'block') {
+      dropdown.style.display = 'none';
+    }
+  }
+}
+</script>
 </body>
 </html>

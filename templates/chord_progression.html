@@ -66,11 +66,13 @@
                 {% if exercise_type == 'progression' %}
                     <label for="rating">How challenging was this progression?</label><br>
                     <input type="hidden" name="exercise_type" value="progression">
-                    <input type="hidden" name="chord_name" value="{% for chord in progression %}{{ chord.name }}{% if not loop.last %},{% endif %}{% endfor %}">
+                    <input type="hidden" name="chord_name" value="{{ chord_name }}">
+                    <input type="hidden" name="variation_index" value="{{ variation_index }}">
                 {% elif exercise_type == 'single_chord' %}
                     <label for="rating">How challenging was this chord?</label><br>
                     <input type="hidden" name="exercise_type" value="single_chord">
                     <input type="hidden" name="chord_name" value="{{ single_chord_name }}">
+                    <input type="hidden" name="variation_index" value="{{ variation_index }}">
                 {% endif %}
                 <input type="hidden" name="progression_count" value="{{ progression_count }}">
                 <input type="hidden" name="single_chord_count" value="{{ single_chord_count }}">

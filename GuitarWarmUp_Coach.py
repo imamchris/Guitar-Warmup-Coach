@@ -24,6 +24,11 @@ with engine.connect() as conn:
     except Exception:
         pass
     conn.commit()
+    try:
+        conn.execute(text('ALTER TABLE feedback ADD COLUMN variation_index INTEGER'))
+    except Exception:
+        pass
+    conn.commit()
 
 # Chordify Libraries
 chord_library = ChordLibrary()
@@ -233,19 +238,15 @@ def daily_exercise():
     exercise_type = random.choice(available_types)
     if exercise_type == "single_chord":
         skill_level = session.get('skill_level', 'beginner')
-        all_chords = get_available_chords(skill_level)
-        weights = []
-        for chord in all_chords:
-            ratings = get_chord_ratings(chord)
-            avg_rating = sum(ratings) / len(ratings) if ratings else 5
-            weights.append(max(11 - avg_rating, 1))
-        chord_name = random.choices(all_chords, weights=weights, k=1)[0]
-        chord_data = chord_library.get_chord(chord_name)
-        chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], chord_name)
+        chord_name, variation_index, label = pick_weighted_chord_variation(skill_level)
+        chord_data = chord_library.get_chord(chord_name, variation_index)
+        chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], f"{chord_name} ({label})")
         return render_template(
             'daily_exercise.html',
             exercise_type=exercise_type,
             chord_name=chord_name,
+            variation_index=variation_index,
+            chord_label=label,
             chord_svg=chord_svg,
             chord_count=chord_count + 1,
             scale_count=scale_count
@@ -307,8 +308,10 @@ def submit_feedback():
     exercise_type = request.form.get('exercise_type', 'unknown')
     scale_name = request.form.get('scale_name')
     scale_key = request.form.get('scale_key')
-    shape_name = request.form.get('shape_name')  # NEW: get shape_name if present
+    shape_name = request.form.get('shape_name')
     chord_name = request.form.get('chord_name')
+    variation_index = request.form.get('variation_index')  # NEW
+
     with engine.connect() as conn:
         if exercise_type == 'scale':
             conn.execute(
@@ -317,8 +320,8 @@ def submit_feedback():
             )
         elif exercise_type == 'single_chord':
             conn.execute(
-                text("INSERT INTO feedback (user_id, exercise_type, rating, chord_name) VALUES (:user_id, :exercise_type, :rating, :chord_name)"),
-                {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating, 'chord_name': chord_name}
+                text("INSERT INTO feedback (user_id, exercise_type, rating, chord_name, variation_index) VALUES (:user_id, :exercise_type, :rating, :chord_name, :variation_index)"),
+                {'user_id': session['user_id'], 'exercise_type': exercise_type, 'rating': rating, 'chord_name': chord_name, 'variation_index': variation_index}
             )
         else:
             conn.execute(
@@ -373,17 +376,42 @@ def get_available_chords(skill_level):
     else:
         return list(chord_library.chord_positions.keys())
 
+def pick_weighted_chord_variation(skill_level):
+    available = chord_library.get_all_chord_variations(skill_level)
+    weights = []
+    for name, idx, label in available:
+        ratings = get_chord_variation_ratings(name, idx)
+        avg_rating = sum(ratings) / len(ratings) if ratings else 5
+        weights.append(max(11 - avg_rating, 1))
+    chosen = random.choices(available, weights=weights, k=1)[0]
+    return chosen  # (chord_name, variation_index, label)
+
+def get_chord_variation_ratings(chord_name, variation_index):
+    with engine.connect() as conn:
+        result = conn.execute(
+            text("SELECT rating FROM feedback WHERE exercise_type='single_chord' AND chord_name=:chord_name AND variation_index=:variation_index"),
+            {'chord_name': chord_name, 'variation_index': variation_index}
+        )
+        return [row.rating for row in result.fetchall()]
+
 # Other
 
 @app.route('/about')
 def about():
     return render_template('about.html')
 
+@app.route('/preferences', methods=['GET', 'POST'])
+def preferences():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    # Handle POST to update preferences here if needed
+    return render_template('preferences.html')
+
 # Main
 
-with engine.connect() as conn:
-    conn.execute(text("DELETE FROM feedback"))
-    conn.commit()
+# with engine.connect() as conn:
+#     conn.execute(text("DELETE FROM feedback"))
+#     conn.commit()
 
 if __name__ == '__main__':
     app.run(debug=True)

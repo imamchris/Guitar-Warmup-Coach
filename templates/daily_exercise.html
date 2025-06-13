@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Daily Exercise</title>
+    <title>Chord Progression Exercises</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
     <script src="{{ url_for('static', filename='js/feedback_modal.js') }}"></script>
 </head>
 <body>
     <div class="main-container">
-        <h1>Daily Exercise</h1>
+        <h1>Chord Progression Exercises</h1>
         {% if error %}
             <p class="error">{{ error }}</p>
         {% endif %}
         {% if completed %}
             <div class="completion">
                 <h2>Great Job! 🎉</h2>
-                <p>You have completed today's exercises!</p>
-                <a href="/" class="btn-main">Back to Home</a>
+                <p>You have completed {{ max_progressions }} chord progression exercises!</p>
+                <a href="/">Back to Home</a>>Back to Home</a>
             </div>
-        {% elif exercise_type == "chord_progression" %}
-            <h2>Chord Progression</h2>
+        {% elif exercise_type == 'progression' and progression %}
+            <h2>Chord Progression</h2> <!--CHORD PROGRESSION-->
             <div class="chord-grid">
                 {% for chord in chord_svgs %}
                     <div class="chord-card">
@@ -37,56 +37,57 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            <form id="nextDailyForm">
-                <input type="hidden" name="chord_count" value="{{ chord_count }}">
-                <input type="hidden" name="scale_count" value="{{ scale_count }}">
-                <button type="submit" class="btn-main">Next Exercise</button>
-            </form>
+            <form id="nextExerciseForm"> <!--FORM FOR NEXT EXERCISE-->
+                <input type="hidden" name="progression_count" value="{{ progression_count }}">
+                <button type="submit" class="btn-main" id="nextExerciseBtn">Next Exercise</button>
+            </form>tton type="submit" class="btn-main">Next Exercise</button>
             <a href="/">Back to Home</a>
-
-        {% elif exercise_type == "scale" %}
-            <h2>Scale Exercise</h2>
-            <div class="scale-title">
-                Scale: {{ scale_key }} {{ scale_name }}
-            </div>
-            <div class="scale-svg-container">
-                {{ scale_svg|safe }}
-            </div>
-            <form id="nextDailyForm">
-                <input type="hidden" name="chord_count" value="{{ chord_count }}">
-                <input type="hidden" name="scale_count" value="{{ scale_count }}">
-                <button type="submit" class="btn-main">Next Exercise</button>
-            </form>
             <a href="/">Back to Home</a>
-
-        {% elif exercise_type == "single_chord" %}
-            <h2>Single Chord Exercise</h2>
+        {% elif exercise_type == 'single_chord' and single_chord_name and single_chord_svg %} <!--SINGLE CHORD EXERCISE-->
+            <h2>Single Chord Exercise</h2>}
             <div class="chord-card" style="margin: 0 auto 24px auto; max-width: 220px; box-shadow: 0 2px 12px rgba(0,0,0,0.10); border-radius: 12px; background: #fafafa;">
                 <div class="svg-container chord-svg" style="padding-right: 35px;">
-                    {{ chord_svg|safe }}
+                    {{ single_chord_svg|safe }}_name }}
                 </div>
-            </div>
-            <form id="nextDailyForm">
-                <input type="hidden" name="chord_count" value="{{ chord_count }}">
-                <input type="hidden" name="scale_count" value="{{ scale_count }}">
-                <input type="hidden" name="chord_name" value="{{ chord_name if chord_name else single_chord_name }}">
-                <button type="submit" class="btn-main">Next Exercise</button>
-            </form>
-            <a href="/">Back to Home</a>
+            <div class="scale-svg-container">
+            </div> scale_svg|safe }}
+            <form id="nextExerciseForm">
+                <input type="hidden" name="single_chord_count" value="{{ single_chord_count }}">
+                <button type="submit" class="btn-main" id="nextExerciseBtn">Next Exercise</button>
+            </form>put type="hidden" name="scale_count" value="{{ scale_count }}">
+            <a href="/">Back to Home</a>ass="btn-main">Next Exercise</button>
         {% endif %}
-    </div>
+    </div>  <a href="/">Back to Home</a>
 
-    <!-- Feedback Modal -->
+    <!-- Feedback Modal (always present, but only shown when needed) -->
     <div id="feedbackModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:1000; align-items:center; justify-content:center;">
-        <div style="background:#fff; border-radius:16px; padding:32px 24px; max-width:340px; margin:auto; box-shadow:0 4px 32px rgba(0,0,0,0.18); text-align:center;">
-            <form method="post" action="{{ url_for('submit_feedback') }}" id="feedbackForm">
-                {% if exercise_type == 'chord_progression' %}
+        <div style="background:#fff; border-radius:16px; padding:32px 24px; max-width:340px; margin:auto; box-shadow:0 4px 32px rgba(0,0,0,0.18); text-align:center;">fa;">
+            <form method="post" action="{{ url_for('chord_progression') }}" id="feedbackForm">
+                {% if exercise_type == 'progression' %}
                     <label for="rating">How challenging was this progression?</label><br>
-                    <input type="hidden" name="exercise_type" value="chord_progression">
-                    <input type="hidden" name="chord_name" value="{% for chord in progression %}{{ chord.name }}{% if not loop.last %},{% endif %}{% endfor %}">
-                {% elif exercise_type == 'single_chord' %}
-                    <label for="rating">How challenging was this chord?</label><br>
+                    <input type="hidden" name="exercise_type" value="progression">
+                    <input type="hidden" name="chord_name" value="{{ chord_name }}">
+                    <input type="hidden" name="variation_index" value="{{ variation_index }}">
+                {% elif exercise_type == 'single_chord' %}lue="{{ scale_count }}">
+                    <label for="rating">How challenging was this chord?</label><br>d_name else single_chord_name }}">
                     <input type="hidden" name="exercise_type" value="single_chord">
+                    <input type="hidden" name="chord_name" value="{{ single_chord_name }}">
+                    <input type="hidden" name="variation_index" value="{{ variation_index }}">k to Home</a>
+                {% endif %}
+                <input type="hidden" name="progression_count" value="{{ progression_count }}">
+                <input type="hidden" name="single_chord_count" value="{{ single_chord_count }}">
+                <input type="range" id="rating" name="rating" min="1" max="10" value="5" oninput="document.getElementById('sliderValue').innerText = this.value;">
+                <span id="sliderValue">5</span>/10kModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:1000; align-items:center; justify-content:center;">
+                <br>; box-shadow:0 4px 32px rgba(0,0,0,0.18); text-align:center;">
+                <button type="submit" class="btn-main" style="margin-top:18px;">Submit Feedback</button>ethod="post" action="{{ url_for('submit_feedback') }}" id="feedbackForm">
+            </form>
+            <button onclick="closeModal()" style="margin-top:16px; background:#ef4444; color:#fff; border:none; border-radius:8px; padding:8px 18px; font-weight:bold; cursor:pointer;">Cancel</button>      <label for="rating">How challenging was this progression?</label><br>
+        </div>          <input type="hidden" name="exercise_type" value="chord_progression">
+    </div>                    <input type="hidden" name="chord_name" value="{% for chord in progression %}{{ chord.name }}{% if not loop.last %},{% endif %}{% endfor %}">
+         {% elif exercise_type == 'single_chord' %}
+</body>             <label for="rating">How challenging was this chord?</label><br>
+</html>                    <input type="hidden" name="exercise_type" value="single_chord">
+
                     <input type="hidden" name="chord_name" value="{{ chord_name if chord_name else single_chord_name }}">
                 {% elif exercise_type == 'scale' %}
                     <label for="rating">How challenging was this scale?</label><br>

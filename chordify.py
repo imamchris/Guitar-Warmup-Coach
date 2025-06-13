@@ -1,48 +1,74 @@
 class ChordLibrary:
     def __init__(self):
-        # Chord definitions. Barre chords have a 'barre' key.
         self.chord_positions = {
-            "F": {"positions": [1, 3, 3, 2, 0, 1],"fingers": [1, 3, 4, 2, 0, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}, "level": "intermediate"},
-            "C": {"positions": [-1, 1, 3, 3, 3, 1],"fingers": [0, 1, 2, 3, 4, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}, "level": "beginner"},
-            "Fm": {"positions": [1, 3, 3, 0, 0, 1],"fingers": [1, 3, 4, 0, 0, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
-            "Cm": {"positions": [-1, 1, 3, 3, 2, 1],"fingers": [0, 1, 3, 4, 2, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
-            "Fsus4": {"positions": [1, 3, 3, 3, 0, 1],"fingers": [1, 2, 3, 4, 0, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
-            "Csus4": {"positions": [-1, 1, 3, 3, 4, 1],"fingers": [0, 1, 2, 3, 4, 1], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
-            "F7": {"positions": [1, 0, 2, 3, 1, -1],"fingers": [1, 0, 2, 3, 1, 0], "barre": {"fret": 1, "from_string": 0, "to_string": 5}},
-
-
-            "G": {"positions": [3, 2, 0, 0, 3, 3], "fingers": [2, 1, 0, 0, 3, 4], "level": "beginner"},
-            "C": {"positions": [-1, 3, 2, 0, 1, 0], "fingers": [0, 3, 2, 0, 1, 0], "level": "beginner"},
-            "D": {"positions": [-1, -1, 0, 2, 3, 2], "fingers": [0, 0, 0, 1, 3, 2]},
-            "Em": {"positions": [0, 2, 2, 0, 0, 0], "fingers": [0, 2, 3, 0, 0, 0]},
-            "A": {"positions": [-1, 0, 2, 2, 2, 0], "fingers": [0, 0, 1, 2, 3, 0]},
-            "B": {"positions": [-1, 2, 4, 4, 4, 2], "fingers": [0, 1, 3, 4, 2, 1], "level": "intermediate"},
-            "E": {"positions": [0, 2, 2, 1, 0, 0], "fingers": [0, 2, 3, 1, 0, 0]},
-
-
-            
-            # Add more barre chords as needed...
+            "C": [
+                {
+                    "positions": [-1, 3, 2, 0, 1, 0],
+                    "fingers": [0, 3, 2, 0, 1, 0],
+                    "level": "beginner",
+                    "label": "1"
+                },
+                {
+                    "positions": [-1, 1, 3, 3, 3, 1],
+                    "fingers": [0, 1, 2, 3, 4, 1],
+                    "barre": {"fret": 1, "from_string": 0, "to_string": 5},
+                    "level": "intermediate",
+                    "label": "2"
+                }
+            ],
+            "F": [
+                {
+                    "positions": [1, 3, 3, 2, 0, 1],
+                    "fingers": [1, 3, 4, 2, 0, 1],
+                    "barre": {"fret": 1, "from_string": 0, "to_string": 5},
+                    "level": "intermediate",
+                    "label": "1"
+                }
+            ],
+            "G": [
+                {
+                    "positions": [3, 2, 0, 0, 0, 3],
+                    "fingers": [2, 1, 0, 0, 0, 3],
+                    "level": "beginner",
+                    "label": "1"
+                }
+            ],
+            # ...repeat for all chords, wrapping each in a list...
         }
 
-    def get_chord(self, chord_name):
-        """Get chord data by name."""
-        return self.chord_positions[chord_name]
+    def get_chord(self, chord_name, variation=0):
+        """Get chord data by name and variation index (default to first variation)."""
+        return self.chord_positions[chord_name][variation]
 
-    def get_movable_chord(self, base_name, fret):
+    def get_all_chord_variations(self, skill_level):
+        """Return all (chord_name, variation_index, label) tuples filtered by skill level."""
+        allowed_levels = {
+            'beginner': ['beginner'],
+            'intermediate': ['beginner', 'intermediate'],
+            'expert': ['beginner', 'intermediate', 'expert']
+        }
+        allowed = allowed_levels.get(skill_level, ['beginner'])
+        result = []
+        for name, variations in self.chord_positions.items():
+            for idx, var in enumerate(variations):
+                if var.get("level", "beginner") in allowed:
+                    label = var.get("label", f"variation {idx+1}")
+                    result.append((name, idx, label))
+        return result
+
+    def get_movable_chord(self, base_name, fret, variation=0):
         """
         Move a barre chord shape to a new fret.
         Only works for chords with a 'barre' key.
         """
-        base = self.get_chord(base_name)
+        base = self.get_chord(base_name, variation)
         if "barre" not in base:
             raise ValueError("Not a movable barre chord.")
         shift = fret - base["barre"]["fret"]
-        # Shift all positions by the fret difference
         new_positions = [
             (p + shift if p not in (None, -1, 0) else p)
             for p in base["positions"]
         ]
-        # Update barre info
         new_barre = base["barre"].copy()
         new_barre["fret"] = fret
         return {
@@ -97,22 +123,29 @@ class ChordLibrary:
         svg.append('</svg>')
         return "\n".join(svg)
 
-    def create_chord_progression(self, chord_names):
+    def create_chord_progression(self, chord_names, variations=None):
         """
-        Create a chord progression from a list of chord names.
+        Create a chord progression from a list of chord names and optional variation indices.
 
         Args:
             chord_names (list): A list of chord names (e.g., ["G", "C", "D"]).
+            variations (list): Optional list of variation indices for each chord.
 
         Returns:
             list: A list of dictionaries containing chord data (positions and fingerings).
         """
         progression = []
-        for chord_name in chord_names:
+        for i, chord_name in enumerate(chord_names):
             try:
-                chord_data = self.get_chord(chord_name)
-                progression.append({"name": chord_name, "positions": chord_data["positions"], "fingers": chord_data["fingers"]})
-            except ValueError as e:
+                var_idx = variations[i] if variations and i < len(variations) else 0
+                chord_data = self.get_chord(chord_name, var_idx)
+                progression.append({
+                    "name": chord_name,
+                    "variation": var_idx,
+                    "positions": chord_data["positions"],
+                    "fingers": chord_data["fingers"]
+                })
+            except Exception as e:
                 raise ValueError(f"Error in chord progression: {e}")
         return progression
 
@@ -179,7 +212,7 @@ class ScaleLibrary:
                     [3, 5, 6],
                     [3, 5, 6],
                 ],
-                "level": "expert"
+                "level": "intermediate"
             }
         }
 
@@ -267,3 +300,5 @@ class ScaleLibrary:
 
 # 6. Add a way to change the skill level of the overall experience (i.e. beginner, intermediate, advanced)
 # 7. Create profile page, maybe a dropdown
+
+
