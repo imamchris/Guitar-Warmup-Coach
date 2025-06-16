@@ -404,8 +404,44 @@ def about():
 def preferences():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    # Handle POST to update preferences here if needed
-    return render_template('preferences.html')
+
+    # Handle skill level change
+    if request.method == 'POST' and 'skill_level' in request.form:
+        new_level = request.form['skill_level']
+        with engine.connect() as conn:
+            conn.execute(
+                text("UPDATE users SET skill_level=:level WHERE id=:user_id"),
+                {'level': new_level, 'user_id': session['user_id']}
+            )
+            conn.commit()
+        session['skill_level'] = new_level
+        flash('Skill level updated!', 'success')
+        return redirect(url_for('preferences'))
+
+    # Handle feedback deletion
+    if request.method == 'POST' and 'delete_feedback_id' in request.form:
+        feedback_id = request.form['delete_feedback_id']
+        with engine.connect() as conn:
+            conn.execute(
+                text("DELETE FROM feedback WHERE id=:id AND user_id=:user_id"),
+                {'id': feedback_id, 'user_id': session['user_id']}
+            )
+            conn.commit()
+        flash('Feedback entry deleted.', 'success')
+        return redirect(url_for('preferences'))
+
+    # Fetch all feedback for this user
+    with engine.connect() as conn:
+        result = conn.execute(
+            text("SELECT * FROM feedback WHERE user_id=:user_id"),
+            {'user_id': session['user_id']}
+        )
+        feedback_entries = result.fetchall()
+
+    # Fetch current skill level
+    skill_level = session.get('skill_level', 'beginner')
+
+    return render_template('preferences.html', feedback_entries=feedback_entries, skill_level=skill_level)
 
 # Main
 

@@ -2,11 +2,141 @@
 <html>
 <head>
     <title>Settings / Preferences</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .prefs-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            padding: 32px 28px 24px 28px;
+            max-width: 540px;
+            margin: 32px auto 0 auto;
+        }
+        .prefs-card h2 {
+            margin-top: 0;
+            color: #2d3a4a;
+            font-size: 1.3em;
+        }
+        .prefs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+        }
+        .prefs-table th, .prefs-table td {
+            padding: 10px 12px;
+            text-align: left;
+        }
+        .prefs-table th {
+            background: #f4f6fa;
+            color: #2d3a4a;
+            font-weight: 600;
+        }
+        .prefs-table tr:nth-child(even) {
+            background: #f9fafc;
+        }
+        .prefs-table tr:hover {
+            background: #e6f0fa;
+        }
+        .prefs-btn, .prefs-table button {
+            background: #2d7cff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 7px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .prefs-btn:hover, .prefs-table button:hover {
+            background: #1a5dcc;
+        }
+        select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #cfd8dc;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+        .prefs-empty {
+            color: #888;
+            margin-top: 12px;
+        }
+        .prefs-back {
+            display: inline-block;
+            margin-top: 28px;
+            color: #2d7cff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .prefs-back:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .prefs-card {
+                padding: 18px 6px;
+            }
+            .prefs-table th, .prefs-table td {
+                padding: 7px 5px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Settings / Preferences</h1>
-    <p>Here you can change your skill level, theme, and other preferences.</p>
-    <!-- Add your settings form here -->
-    <a href="/">Back to Home</a>
+    <div class="main-container">
+        <div class="prefs-card">
+            <h1>Settings / Preferences</h1>
+
+            <h2>Change Skill Level</h2>
+            <form method="post" style="margin-bottom: 24px;">
+                <select name="skill_level">
+                    <option value="beginner" {% if skill_level == 'beginner' %}selected{% endif %}>Beginner</option>
+                    <option value="intermediate" {% if skill_level == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                    <option value="expert" {% if skill_level == 'expert' %}selected{% endif %}>Expert</option>
+                </select>
+                <button type="submit" class="prefs-btn">Change</button>
+            </form>
+
+            <h2>Your Feedback Data</h2>
+            {% if feedback_entries %}
+                <table class="prefs-table">
+                    <tr>
+                        <th>Type</th>
+                        <th>Chord/Scale</th>
+                        <th>Pattern/Shape</th>
+                        <th>Rating</th>
+                        <th>Delete</th>
+                    </tr>
+                    {% for entry in feedback_entries %}
+                    <tr>
+                        <td>{{ entry.exercise_type }}</td>
+                        <td>
+                            {% if entry.exercise_type == 'single_chord' %}
+                                {{ entry.chord_name }}{% if entry.variation_index is not none %} ({{ entry.variation_index|int + 1 }}){% endif %}
+                            {% elif entry.exercise_type == 'scale' %}
+                                {{ entry.scale_name }} ({{ entry.scale_key }})
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if entry.shape_name %}{{ entry.shape_name }}{% else %}-{% endif %}
+                        </td>
+                        <td>{{ entry.rating }}</td>
+                        <td>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="delete_feedback_id" value="{{ entry.id }}">
+                                <button type="submit" class="prefs-btn" onclick="return confirm('Delete this feedback entry?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <div class="prefs-empty">No feedback data yet.</div>
+            {% endif %}
+
+            <a href="/" class="prefs-back">&larr; Back to Home</a>
+        </div>
+    </div>
 </body>
 </html>
