@@ -290,6 +290,19 @@ class ScaleLibrary:
         svg.append('</svg>')
         return "\n".join(svg)
 
+    def get_available_scales(self, skill_level):
+        allowed_levels = {
+            'beginner': ['beginner'],
+            'intermediate': ['beginner', 'intermediate'],
+            'expert': ['beginner', 'intermediate', 'expert']
+        }
+        allowed = allowed_levels.get(skill_level, ['beginner'])
+        return [
+            (name, data)
+            for name, data in self.patterns.items()
+            if data.get("level", "beginner") in allowed
+        ]
+
 
 # Goals for the code:
 # 1. Make a simple dashboard to display a basic interface to access 'daily exercises' X
@@ -298,7 +311,7 @@ class ScaleLibrary:
 # 4. Create a tutorial on how to read TAB, Chord Charts, and Chord Progressions x
 # 5. Tailor the exercises to the user based on their progress and data x
 
-# 6. Add a way to change the skill level of the overall experience (i.e. beginner, intermediate, advanced)
+# 6. Add a way to change the skill level of the overall experience (i.e. beginner, intermediate, advanced) x
 # 7. Create profile page, maybe a dropdown
 
 

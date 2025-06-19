@@ -7,61 +7,63 @@
 </head>
 <body>
     <div class="main-container" style="max-width: 700px; margin: 0 auto;">
-        <h1>Tutorial</h1>
+        <div class="prefs-card">
+            <h1>Tutorial</h1>
 
-        <p>
-            This tutorial will cover the basic function of the application and how to read and utilize them properly in order to maximize the enjoyment of your user experience as much as possible.
-        </p>
-
-        <section>
-            <h2>1. Reading Guitar TAB</h2>
             <p>
-                Guitar TAB (tablature) is a simple way to read music for guitar. Each line represents a string, and numbers show which fret to play.
+                This tutorial will cover the basic function of the application and how to read and utilize them properly in order to maximize the enjoyment of your user experience as much as possible.
             </p>
-            <div style="max-width: 600px; margin-bottom: 12px; padding-left: 50px;">
-                {{ scale_svg|safe }}
-            </div>
-            <ul>
-                <p>The bottom line is the low E string; the top is the high e string.</p>
-                <p>Numbers show which fret to press. A "0" means play the open string.</p>
-                <p>Read from left to right for the order of notes.</p>
-            </ul>
-        </section>
 
-        <section>
-            <h2>2. Reading Chord Charts</h2>
-            <p>
-                Chord charts show you where to place your fingers to play a chord.
-            </p>
-            <div style="max-width:220px; margin-bottom:12px; padding-left: 230px;">
-                {{ chord_svg|safe }}
-            </div>
-            <ul>
-                <p>Vertical lines = strings (leftmost is low E, rightmost is high e).</p>
-                <p>Horizontal lines = frets.</p>
-                <p>Black dots = where to place your fingers. Numbers may show which finger to use.</p>
-                <p>"O" above a string = play open. "X" = don't play that string.</p>
-            </ul>
-        </section>
+            <section>
+                <h2>1. Reading Guitar TAB</h2>
+                <p>
+                    Guitar TAB (tablature) is a simple way to read music for guitar. Each line represents a string, and numbers show which fret to play.
+                </p>
+                <div style="max-width: 600px; margin-bottom: 12px; padding-left: 50px;">
+                    {{ scale_svg|safe }}
+                </div>
+                <ul>
+                    <p>The bottom line is the low E string; the top is the high e string.</p>
+                    <p>Numbers show which fret to press. A "0" means play the open string.</p>
+                    <p>Read from left to right for the order of notes.</p>
+                </ul>
+            </section>
 
-        <section>
-            <h2>3. Reading Chord Progressions</h2>
-            <p>
-                A chord progression is a sequence of chords played in order. For example:
-            </p>
-            <div style="font-size:1.2em; margin: 12px 0; font-weight:bold;">
-                G &nbsp; / &nbsp; C &nbsp; / &nbsp; D &nbsp; / &nbsp; G
-            </div>
-            <ul>
-                <p>Each chord is played for a set number of beats or bars.</p>
-                <p>Slashes (/) separate the chords.</p>
-                <p>Repeat the progression as needed for the song or rhythm.</p>
-            </ul>
-        </section>
+            <section>
+                <h2>2. Reading Chord Charts</h2>
+                <p>
+                    Chord charts show you where to place your fingers to play a chord.
+                </p>
+                <div style="max-width:220px; margin-bottom:12px; padding-left: 230px;">
+                    {{ chord_svg|safe }}
+                </div>
+                <ul>
+                    <p>Vertical lines = strings (leftmost is low E, rightmost is high e).</p>
+                    <p>Horizontal lines = frets.</p>
+                    <p>Black dots = where to place your fingers. Numbers may show which finger to use.</p>
+                    <p>"O" above a string = play open. "X" = don't play that string.</p>
+                </ul>
+            </section>
 
-        <hr>
-        <div style="text-align:center; margin-top:24px;">
-            <a href="{{ url_for('index') }}" class="btn-main">Back to Home</a>
+            <section>
+                <h2>3. Reading Chord Progressions</h2>
+                <p>
+                    A chord progression is a sequence of chords played in order. For example:
+                </p>
+                <div style="font-size:1.2em; margin: 12px 0; font-weight:bold;">
+                    G &nbsp; / &nbsp; C &nbsp; / &nbsp; D &nbsp; / &nbsp; G
+                </div>
+                <ul>
+                    <p>Each chord is played for a set number of beats or bars.</p>
+                    <p>Slashes (/) separate the chords.</p>
+                    <p>Repeat the progression as needed for the song or rhythm.</p>
+                </ul>
+            </section>
+
+            <hr>
+            <div style="text-align:center; margin-top:24px;">
+                <a href="{{ url_for('index') }}" class="btn-main">Back to Home</a>
+            </div>
         </div>
     </div>
 </body>

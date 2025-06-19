@@ -1,376 +1,502 @@
-/* --- General Layout & Typography --- */
+/* =========================
+    1. General Layout & Typography
+    ========================= */
 body {
-    background: linear-gradient(120deg, #e0e7ff 0%, #f0fff4 100%);
-    font-family: 'Quicksand', Arial, sans-serif;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    color: #333;
-    text-align: center;
+     background: linear-gradient(120deg, #e0e7ff 0%, #f0fff4 100%);
+     font-family: 'Quicksand', Arial, sans-serif;
+     min-height: 100vh;
+     margin: 0;
+     padding: 0;
+     color: #333;
+     text-align: center;
 }
 
 .main-container {
-    max-width: 900px;
-    margin: 48px auto 0 auto;
-    background: rgba(255, 255, 255, 0.92);
-    border-radius: 26px;
-    box-shadow: 0 8px 32px rgba(52, 144, 220, 0.13);
-    padding: 48px 32px 56px 32px;
-    backdrop-filter: blur(8px);
-    border: 1.5px solid rgba(180, 220, 255, 0.25);
-    text-align: center;
+     max-width: 900px;
+     margin: 48px auto 0 auto;
+     background: rgba(255, 255, 255, 0.92);
+     border-radius: 26px;
+     box-shadow: 0 8px 32px rgba(52, 144, 220, 0.13);
+     padding: 48px 32px 56px 32px;
+     backdrop-filter: blur(8px);
+     border: 1.5px solid rgba(180, 220, 255, 0.25);
+     text-align: center;
 }
 
 header {
-    margin-bottom: 24px;
+     margin-bottom: 24px;
 }
 
 h1 {
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 2.7em;
-    letter-spacing: 1.5px;
-    color: #2563eb;
-    font-weight: 800;
-    text-shadow: 0 2px 8px #e0e7ff;
+     text-align: center;
+     margin-bottom: 40px;
+     font-size: 2.7em;
+     letter-spacing: 1.5px;
+     color: #2563eb;
+     font-weight: 800;
+     text-shadow: 0 2px 8px #e0e7ff;
 }
 
 h2 {
-    text-align: center;
-    margin-bottom: 28px;
-    font-size: 1.6em;
-    color: #059669;
-    font-weight: 700;
+     text-align: center;
+     margin-bottom: 28px;
+     font-size: 1.6em;
+     color: #059669;
+     font-weight: 700;
 }
 
 .scale-title {
-    font-size: 1.3em;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 18px;
-    letter-spacing: 1px;
+     font-size: 1.3em;
+     font-weight: bold;
+     text-align: center;
+     margin-bottom: 18px;
+     letter-spacing: 1px;
 }
 
-/* --- Navigation & Section Cards (index.html) --- */
+/* =========================
+    2. Navigation
+    ========================= */
 nav {
-    margin-bottom: 24px;
+     margin-bottom: 24px;
 }
 
 nav a {
-    color: #2563eb;
-    font-weight: 600;
-    margin: 0 16px;
-    text-decoration: none;
-    font-size: 1.1em;
-    transition: color 0.2s;
+     color: #2563eb;
+     font-weight: 600;
+     margin: 0 16px;
+     text-decoration: none;
+     font-size: 1.1em;
+     transition: color 0.2s;
 }
 
 nav a:hover {
-    color: #059669;
+     color: #059669;
 }
 
+/* =========================
+    3. Section Cards (index.html)
+    ========================= */
 .section-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 32px;
-    margin: 36px 0 24px 0;
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: center;
+     gap: 32px;
+     margin: 36px 0 24px 0;
 }
 
 .section {
-    background: #f9fafb;
-    border-radius: 18px;
-    box-shadow: 0 2px 16px rgba(99, 102, 241, 0.08);
-    padding: 24px 18px 18px 18px;
-    min-width: 220px;
-    max-width: 260px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.18s, box-shadow 0.18s;
+     background: #f9fafb;
+     border-radius: 18px;
+     box-shadow: 0 2px 16px rgba(99, 102, 241, 0.08);
+     padding: 24px 18px 18px 18px;
+     min-width: 220px;
+     max-width: 260px;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     transition: transform 0.18s, box-shadow 0.18s;
 }
 
 .section:hover {
-    transform: translateY(-6px) scale(1.03);
-    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.13);
-}
-
-.button-link {
-    display: inline-block;
-    background: #2563eb;
-    color: #fff !important;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 28px;
-    font-size: 1.1em;
-    font-weight: bold;
-    margin-bottom: 16px;
-    margin-top: 8px;
-    text-decoration: none;
-    transition: background 0.2s, transform 0.15s;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.10);
-}
-
-.button-link:hover {
-    background: #1d4ed8;
-    transform: scale(1.05);
+     transform: translateY(-6px) scale(1.03);
+     box-shadow: 0 8px 32px rgba(99, 102, 241, 0.13);
 }
 
 .section img {
-    width: 100%;
-    max-width: 180px;
-    border-radius: 12px;
-    margin-top: 10px;
-    box-shadow: 0 2px 8px rgba(52, 144, 220, 0.10);
+     width: 100%;
+     max-width: 180px;
+     border-radius: 12px;
+     margin-top: 10px;
+     box-shadow: 0 2px 8px rgba(52, 144, 220, 0.10);
 }
 
-footer {
-    margin-top: 48px;
-    color: #64748b;
-    font-size: 1em;
+/* =========================
+    4. Buttons & Links
+    ========================= */
+.button-link {
+     display: inline-block;
+     background: #2563eb;
+     color: #fff !important;
+     border: none;
+     border-radius: 10px;
+     padding: 12px 28px;
+     font-size: 1.1em;
+     font-weight: bold;
+     margin-bottom: 16px;
+     margin-top: 8px;
+     text-decoration: none;
+     transition: background 0.2s, transform 0.15s;
+     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.10);
 }
 
-footer a {
-    color: #2563eb;
-    text-decoration: underline;
-    font-weight: 500;
+.button-link:hover {
+     background: #1d4ed8;
+     transform: scale(1.05);
 }
 
-footer a:hover {
-    color: #059669;
-}
-
-/* --- Chord Progression & Daily Exercise --- */
-.chord-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 28px;
-    font-size: 1.5em;
-    font-weight: bold;
-    margin: 40px 0 24px 0;
-    letter-spacing: 2px;
-    color: #1e293b;
-}
-
-.slash {
-    color: #007bff;
-}
-
-.chord-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 48px;
-    margin: 36px 0 24px 0;
-}
-
-.chord-card {
-    background: #f9fafb;
-    border-radius: 22px;
-    box-shadow: 0 2px 16px rgba(99, 102, 241, 0.10);
-    padding: 12px 18px 18px 5px;
-    min-width: 220px;
-    max-width: 240px;
-    min-height: 240px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.18s, box-shadow 0.18s;
-}
-
-.chord-card:hover {
-    transform: translateY(-6px) scale(1.03);
-    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.13);
-}
-
-.svg-container.chord-svg {
-    width: 200px; /* Change this value to adjust the width */
-    height: 200px;
-    margin: 0 auto 0 auto;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-right: 25px;
-}
-
-/* --- Scale SVG Container --- */
-.scale-svg-container {
-    width: 100%; /* Change this value or max-width below */
-    max-width: 500px; /* Change this value to adjust the maximum width */
-    margin: 0 auto 36px auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f9f9f9;
-    border-radius: 10px;
-    padding: 24px 0;
-    overflow-x: auto;
-}
-
-.scale-svg-container svg {
-    width: 100%; /* Change this value or max-width below */
-    height: auto;
-    max-width: 500px; /* Change this value to adjust the SVG's maximum width */
-    min-width: 500px;
-    display: block;
-}
-
-/* --- Buttons --- */
 .btn-main,
 button {
-    display: block;
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    padding: 16px 38px;
-    font-size: 1.15em;
-    font-weight: bold;
-    margin: 48px auto 0 auto;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.15s, box-shadow 0.18s;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.10);
+     display: block;
+     background: #2563eb;
+     color: #fff;
+     border: none;
+     border-radius: 12px;
+     padding: 16px 38px;
+     font-size: 1.15em;
+     font-weight: bold;
+     margin: 48px auto 0 auto;
+     cursor: pointer;
+     transition: background 0.2s, transform 0.15s, box-shadow 0.18s;
+     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.10);
 }
 
 .btn-main:hover,
 button:hover {
-    background: #1d4ed8;
-    transform: scale(1.05);
-    box-shadow: 0 6px 24px rgba(37, 99, 235, 0.18);
+     background: #1d4ed8;
+     transform: scale(1.05);
+     box-shadow: 0 6px 24px rgba(37, 99, 235, 0.18);
 }
 
-/* --- Completion & Error --- */
-.completion {
-    text-align: center;
-    margin-top: 60px;
-}
-
-.error {
-    color: #ef4444;
-    font-size: 1.1em;
-    text-align: center;
-    margin-bottom: 24px;
-}
-
-/* --- Miscellaneous --- */
 a {
-    color: #2563eb;
-    text-decoration: underline;
-    font-weight: 600;
-    margin-top: 24px;
-    display: inline-block;
-    transition: color 0.2s;
+     color: #2563eb;
+     text-decoration: underline;
+     font-weight: 600;
+     margin-top: 24px;
+     display: inline-block;
+     transition: color 0.2s;
 }
 
 a:hover {
-    color: #059669;
+     color: #059669;
 }
 
-.hidden {
-    display: none;
+/* =========================
+    5. Chord Progression & Daily Exercise
+    ========================= */
+.chord-row {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     gap: 28px;
+     font-size: 1.5em;
+     font-weight: bold;
+     margin: 40px 0 24px 0;
+     letter-spacing: 2px;
+     color: #1e293b;
 }
 
-/* --- Input Fields --- */
+.slash {
+     color: #007bff;
+}
+
+.chord-grid {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: center;
+     gap: 48px;
+     margin: 36px 0 24px 0;
+}
+
+.chord-card {
+     background: #f9fafb;
+     border-radius: 22px;
+     box-shadow: 0 2px 16px rgba(99, 102, 241, 0.10);
+     padding: 12px 18px 18px 5px;
+     min-width: 220px;
+     max-width: 240px;
+     min-height: 240px;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.chord-card:hover {
+     transform: translateY(-6px) scale(1.03);
+     box-shadow: 0 8px 32px rgba(99, 102, 241, 0.13);
+}
+
+.svg-container.chord-svg {
+     width: 200px;
+     height: 200px;
+     margin: 0 auto 0 auto;
+     display: flex;
+     align-items: flex-start;
+     justify-content: center;
+     padding-right: 25px;
+}
+
+/* =========================
+    6. Scale SVG Container
+    ========================= */
+.scale-svg-container {
+     width: 100%;
+     max-width: 500px;
+     margin: 0 auto 36px auto;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     background: #f9f9f9;
+     border-radius: 10px;
+     padding: 24px 0;
+     overflow-x: auto;
+}
+
+.scale-svg-container svg {
+     width: 100%;
+     height: auto;
+     max-width: 500px;
+     min-width: 500px;
+     display: block;
+}
+
+/* =========================
+    7. Forms & Inputs
+    ========================= */
 .input-main {
-    display: block;
-    width: 100%;
-    max-width: 340px;
-    margin: 0 auto 16px auto;
-    padding: 14px 18px;
-    border-radius: 10px;
-    border: 1.5px solid #2563eb;
-    background: #f0f7ff;
-    color: #222;
-    font-size: 1.1em;
-    font-family: inherit;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.07);
-    transition: border 0.2s, box-shadow 0.2s;
+     display: block;
+     width: 100%;
+     max-width: 340px;
+     margin: 0 auto 16px auto;
+     padding: 14px 18px;
+     border-radius: 10px;
+     border: 1.5px solid #2563eb;
+     background: #f0f7ff;
+     color: #222;
+     font-size: 1.1em;
+     font-family: inherit;
+     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.07);
+     transition: border 0.2s, box-shadow 0.2s;
 }
 
 .input-main:focus {
-    border: 2px solid #059669;
-    outline: none;
-    background: #e0f2fe;
-    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.13);
+     border: 2px solid #059669;
+     outline: none;
+     background: #e0f2fe;
+     box-shadow: 0 4px 16px rgba(37, 99, 235, 0.13);
 }
 
-/* --- Dropdown styles --- */
+select {
+     padding: 7px 14px;
+     border-radius: 7px;
+     border: 1.5px solid #2563eb;
+     font-size: 1em;
+     margin-right: 10px;
+     background: #f0f7ff;
+     color: #2563eb;
+}
+
+/* =========================
+    8. Dropdown Styles
+    ========================= */
 .dropdown {
-  position: relative;
-  display: inline-block;
+     position: relative;
+     display: inline-block;
 }
 .dropbtn {
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
+     cursor: pointer;
+     text-decoration: none;
+     color: inherit;
 }
 .dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #fff;
-  min-width: 180px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15);
-  z-index: 1001;
-  right: 0;
-  border-radius: 8px;
+     display: none;
+     position: absolute;
+     background-color: #fff;
+     min-width: 180px;
+     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15);
+     z-index: 1001;
+     right: 0;
+     border-radius: 8px;
 }
 .dropdown-content a, .dropdown-content span {
-  color: #333;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
+     color: #333;
+     padding: 12px 16px;
+     text-decoration: none;
+     display: block;
 }
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content a:hover {
+     background-color: #f1f1f1;
+}
 
-/* --- Settings Button --- */
+/* =========================
+    9. Settings Button
+    ========================= */
 .settings-btn {
-    margin-left: 20px;
-    font-weight: bold;
-    /* Optionally add an icon: */
-    /* background: url('/static/images/settings.svg') left center no-repeat; */
-    /* padding-left: 24px; */
+     margin-left: 20px;
+     font-weight: bold;
+     /* Optionally add an icon: */
+     /* background: url('/static/images/settings.svg') left center no-repeat; */
+     /* padding-left: 24px; */
 }
 
-/* --- Responsive --- */
+/* =========================
+    10. Preferences Card & Table
+    ========================= */
+.prefs-card {
+     background: linear-gradient(120deg, #f8fafc 60%, #e0f2fe 100%);
+     border-radius: 18px;
+     box-shadow: 0 8px 32px rgba(52, 144, 220, 0.18);
+     padding: 38px 32px 30px 32px;
+     max-width: 600px;
+     margin: 48px auto 0 auto;
+     animation: fadeInCard 0.7s;
+}
+@keyframes fadeInCard {
+     from { opacity: 0; transform: translateY(30px);}
+     to { opacity: 1; transform: translateY(0);}
+}
+.prefs-card h1 {
+     color: #2563eb;
+     font-size: 2.1em;
+     margin-bottom: 18px;
+     font-weight: 800;
+     letter-spacing: 1px;
+}
+.prefs-card h2 {
+     margin-top: 0;
+     color: #2563eb;
+     font-size: 1.15em;
+     font-weight: 700;
+}
+.prefs-table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-top: 18px;
+     border-radius: 10px;
+     overflow: hidden;
+}
+.prefs-table th, .prefs-table td {
+     padding: 10px 12px;
+     text-align: left;
+}
+.prefs-table th {
+     background: #e0e7ff;
+     color: #2563eb;
+     font-weight: 700;
+}
+.prefs-table tr:nth-child(even) {
+     background: #f9fafc;
+}
+.prefs-table tr:hover {
+     background: #e0f2fe;
+}
+.prefs-btn, .prefs-table button {
+     background: #2563eb;
+     color: #fff;
+     border: none;
+     border-radius: 6px;
+     padding: 7px 18px;
+     font-size: 1em;
+     cursor: pointer;
+     transition: background 0.2s;
+     font-weight: 600;
+}
+.prefs-btn:hover, .prefs-table button:hover {
+     background: #1e40af;
+}
+.prefs-empty {
+     color: #888;
+     margin-top: 12px;
+}
+.prefs-back {
+     display: inline-block;
+     margin-top: 28px;
+     color: #2563eb;
+     text-decoration: none;
+     font-weight: 500;
+}
+.prefs-back:hover {
+     text-decoration: underline;
+}
+
+/* =========================
+    11. Completion & Error
+    ========================= */
+.completion {
+     text-align: center;
+     margin-top: 60px;
+}
+
+.error {
+     color: #ef4444;
+     font-size: 1.1em;
+     text-align: center;
+     margin-bottom: 24px;
+}
+
+/* =========================
+    12. Footer
+    ========================= */
+footer {
+     margin-top: 48px;
+     color: #64748b;
+     font-size: 1em;
+}
+
+footer a {
+     color: #2563eb;
+     text-decoration: underline;
+     font-weight: 500;
+}
+
+footer a:hover {
+     color: #059669;
+}
+
+/* =========================
+    13. Utilities
+    ========================= */
+.hidden {
+     display: none;
+}
+
+/* =========================
+    14. Responsive Design
+    ========================= */
 @media (max-width: 800px) {
-    .main-container {
-        max-width: 98vw;
-        padding: 18px 2vw 32px 2vw;
-    }
-    .section-list {
-        gap: 18px;
-    }
-    .section {
-        min-width: 130px;
-        max-width: 98vw;
-    }
-    .section img {
-        max-width: 120px;
-    }
+     .main-container {
+          max-width: 98vw;
+          padding: 18px 2vw 32px 2vw;
+     }
+     .section-list {
+          gap: 18px;
+     }
+     .section {
+          min-width: 130px;
+          max-width: 98vw;
+     }
+     .section img {
+          max-width: 120px;
+     }
 }
 
 @media (max-width: 700px) {
-    .main-container {
-        padding: 18px 4vw 32px 4vw;
-    }
-    .chord-grid {
-        gap: 18px;
-    }
-    .chord-row {
-        gap: 10px;
-        font-size: 1.1em;
-    }
-    .chord-card {
-        min-width: 140px;
-        max-width: 170px;
-        padding: 18px 4px 18px 4px;
-    }
-    .svg-container.chord-svg {
-        width: 120px;
-        height: 140px;
-    }
-    .scale-svg-container {
-        max-width: 96vw;
-    }
+     .main-container {
+          padding: 18px 4vw 32px 4vw;
+     }
+     .chord-grid {
+          gap: 18px;
+     }
+     .chord-row {
+          gap: 10px;
+          font-size: 1.1em;
+     }
+     .chord-card {
+          min-width: 140px;
+          max-width: 170px;
+          padding: 18px 4px 18px 4px;
+     }
+     .svg-container.chord-svg {
+          width: 120px;
+          height: 140px;
+     }
+     .scale-svg-container {
+          max-width: 96vw;
+     }
+     .prefs-card {
+          padding: 18px 6px;
+     }
+     .prefs-table th, .prefs-table td {
+          padding: 7px 5px;
+     }
 }
