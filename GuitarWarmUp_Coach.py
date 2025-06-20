@@ -103,7 +103,7 @@ def scale_diagram():
 
         # Filter by skill level
         skill_level = session.get('skill_level', 'beginner')
-        all_scales = scale_library.get_available_scales(skill_level)
+        all_scales = [name for name, data in scale_library.get_available_scales(skill_level)]
         all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
         scale_key_pairs = [(scale, key) for scale in all_scales for key in all_keys]
         weights = []
@@ -224,7 +224,7 @@ def daily_exercise():
         return redirect(url_for('login'))
     chord_count = int(request.args.get('chord_count', 0))
     scale_count = int(request.args.get('scale_count', 0))
-    max_chords = 5  # More single chord exercises
+    max_chords = 5
     max_scales = 2
 
     available_types = []
@@ -236,8 +236,9 @@ def daily_exercise():
         return render_template('daily_exercise.html', completed=True)
 
     exercise_type = random.choice(available_types)
+    skill_level = session.get('skill_level', 'beginner')
+
     if exercise_type == "single_chord":
-        skill_level = session.get('skill_level', 'beginner')
         chord_name, variation_index, label = pick_weighted_chord_variation(skill_level)
         chord_data = chord_library.get_chord(chord_name, variation_index)
         chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], f"{chord_name} ({label})")
@@ -252,8 +253,9 @@ def daily_exercise():
             scale_count=scale_count
         )
     else:  # scale
-        skill_level = session.get('skill_level', 'beginner')
-        all_scales = scale_library.get_available_scales(skill_level)
+        all_scales = [name for name, data in scale_library.get_available_scales(skill_level)]
+        if not all_scales:
+            return render_template('daily_exercise.html', completed=True, message="No scales available for your skill level.")
         all_keys = list(ScaleLibrary.NOTE_TO_FRET.keys())
         scale_name = random.choice(all_scales)
         key = random.choice(all_keys)
@@ -451,4 +453,3 @@ def preferences():
 
 if __name__ == '__main__':
     app.run(debug=True)
-

@@ -226,8 +226,14 @@ class ScaleLibrary:
         key_fret = self.NOTE_TO_FRET[key]
         offset = key_fret - g_fret
         positions = []
-        for string_pattern in pattern:
-            positions.append([fret + offset for fret in string_pattern])
+        for string_pattern in pattern["positions"]:
+            row = []
+            for fret in string_pattern:
+                try:
+                    row.append(int(fret) + offset)
+                except Exception:
+                    continue
+            positions.append(row)
         return positions
 
     def draw_scale(self, positions):
