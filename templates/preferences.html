@@ -19,45 +19,66 @@
                 <button type="submit" class="prefs-btn">Change</button>
             </form>
 
-            <h2>Your Feedback Data</h2>
-            {% if feedback_entries %}
-                <div style="overflow-x:auto;">
+            <h2>Your Chord Shape Feedback</h2>
+            {% if chord_feedback %}
                 <table class="prefs-table">
                     <tr>
-                        <th>Type</th>
-                        <th>Chord/Scale</th>
-                        <th>Pattern/Shape</th>
-                        <th>Rating</th>
-                        <th>Delete</th>
+                        <th>Chord Name</th>
+                        <th>Variation</th>
+                        <th>Average Rating</th>
+                        <th>Responses</th>
+                        <th>Delete All</th>
                     </tr>
-                    {% for entry in feedback_entries %}
+                    {% for entry in chord_feedback %}
                     <tr>
-                        <td>{{ entry.exercise_type }}</td>
-                        <td>
-                            {% if entry.exercise_type == 'single_chord' %}
-                                {{ entry.chord_name }}{% if entry.variation_index is not none %} ({{ entry.variation_index|int + 1 }}){% endif %}
-                            {% elif entry.exercise_type == 'scale' %}
-                                {{ entry.scale_name }} ({{ entry.scale_key }})
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if entry.shape_name %}{{ entry.shape_name }}{% else %}-{% endif %}
-                        </td>
-                        <td>{{ entry.rating }}</td>
+                        <td>{{ entry.chord_name }}</td>
+                        <td>{{ entry.variation_index }}</td>
+                        <td>{{ "%.2f"|format(entry.avg_rating) }}</td>
+                        <td>{{ entry.count }}</td>
                         <td>
                             <form method="post" style="display:inline;">
-                                <input type="hidden" name="delete_feedback_id" value="{{ entry.id }}">
-                                <button type="submit" class="prefs-btn" onclick="return confirm('Delete this feedback entry?');">Delete</button>
+                                <input type="hidden" name="pattern_type" value="single_chord">
+                                <input type="hidden" name="chord_name" value="{{ entry.chord_name }}">
+                                <input type="hidden" name="variation_index" value="{{ entry.variation_index }}">
+                                <button type="submit" name="delete_pattern" class="prefs-btn" onclick="return confirm('Delete all feedback for this chord shape?');">Delete</button>
                             </form>
                         </td>
                     </tr>
                     {% endfor %}
                 </table>
-                </div>
             {% else %}
-                <div class="prefs-empty">No feedback data yet.</div>
+                <div class="prefs-empty">No chord feedback yet.</div>
+            {% endif %}
+
+            <h2>Your Scale Pattern Feedback</h2>
+            {% if scale_feedback %}
+                <table class="prefs-table">
+                    <tr>
+                        <th>Scale Name</th>
+                        <th>Key</th>
+                        <th>Average Rating</th>
+                        <th>Responses</th>
+                        <th>Delete All</th>
+                    </tr>
+                    {% for entry in scale_feedback %}
+                    <tr>
+                        <td>{{ entry.scale_name }}</td>
+                        <td>{{ entry.scale_key }}</td>
+                        <td>{{ "%.2f"|format(entry.avg_rating) }}</td>
+                        <td>{{ entry.count }}</td>
+                        <td>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="pattern_type" value="scale">
+                                <input type="hidden" name="scale_name" value="{{ entry.scale_name }}">
+                                <input type="hidden" name="scale_key" value="{{ entry.scale_key }}">
+                                <button type="submit" name="delete_pattern" class="prefs-btn" onclick="return confirm('Delete all feedback for this scale pattern?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <div class="prefs-empty">No scale feedback yet.</div>
             {% endif %}
 
             <a href="/" class="prefs-back">&larr; Back to Home</a>

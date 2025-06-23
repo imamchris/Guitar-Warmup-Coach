@@ -1,6 +1,13 @@
 class ChordLibrary:
     def __init__(self):
         self.chord_positions = {
+            "A": [
+                {
+                "positions": [0, 0, 2, 2, 2, 0],
+                "fingers": [0, 0, 2, 3, 4, 0],
+                "level": "beginner"
+                }
+            ],
             "C": [
                 {
                     "positions": [-1, 3, 2, 0, 1, 0],
@@ -216,6 +223,7 @@ class ScaleLibrary:
             }
         }
 
+    
     def get_scale_positions(self, pattern_name, key, root_string=0):
         """
         Generate scale positions for a given pattern and key.
@@ -311,13 +319,7 @@ class ScaleLibrary:
 
 
 # Goals for the code:
-# 1. Make a simple dashboard to display a basic interface to access 'daily exercises' X
-# 2. Find a a way to combine the chord charts, scales, and progressions together in one big excercise x
-# 3. Create a login system to save user data and progress x
-# 4. Create a tutorial on how to read TAB, Chord Charts, and Chord Progressions x
-# 5. Tailor the exercises to the user based on their progress and data x
 
-# 6. Add a way to change the skill level of the overall experience (i.e. beginner, intermediate, advanced) x
 # 7. Create profile page, maybe a dropdown
 
 
