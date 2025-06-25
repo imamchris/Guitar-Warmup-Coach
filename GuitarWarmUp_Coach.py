@@ -8,10 +8,12 @@ import os
 import secrets
 import random
 from chordify import ChordLibrary, ScaleLibrary
+from datetime import timedelta
 
 # Flask App Setup
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
+app.permanent_session_lifetime = timedelta(minutes=30)  # Session expires after 30 minutes of inactivity
 
 # Database Setup
 DATABASE_URI = 'sqlite:///users.db'
@@ -73,6 +75,7 @@ def login():
                 {'username': username}
             ).fetchone()
             if user and check_password_hash(user.password_hash, password):
+                session.permanent = True  # <-- Add this line
                 session['user_id'] = user.id
                 session['username'] = user.username
                 session['skill_level'] = user['skill_level'] if 'skill_level' in user else None
@@ -303,7 +306,6 @@ def daily_exercise():
         )
 
 @app.route('/tutorial')
-
 def tutorial():
     """Show tutorial examples."""
     chord_name = "A"
