@@ -6,39 +6,40 @@
     <title>Guitar Warmup Coach - Home</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
-    
 </head>
 <body>
     <div class="main-container">
-        <header>
-            <h1>Guitar Warmup Coach</h1>
-            <nav>
-                <a href="/about">About</a>
-                <a href="/preferences" class="settings-btn">Settings</a>
-                <a href="/logout" class="logout-btn">Logout</a>
-            </nav>
-        </header>
-        <div class="section-list">
-            <div class="section">
-                <a href="/daily_exercise" class="button-link">Daily Exercise</a>
-                <img src="/static/images/daily_exercise.jpg" alt="A guitar exercise routine">
+        <div class="prefs-card">
+            <header>
+                <h1>Guitar Warmup Coach</h1>
+                <nav>
+                    <a href="/about">About</a>
+                    <a href="/preferences" class="settings-btn">Settings</a>
+                    <a href="/logout" class="logout-btn">Logout</a>
+                </nav>
+            </header>
+            <div class="section-list">
+                <div class="section">
+                    <a href="/daily_exercise" class="button-link">Daily Exercise</a>
+                    <img src="/static/images/daily_exercise.jpg" alt="A guitar exercise routine">
+                </div>
+                <div class="section">
+                    <a href="/scale_diagram" class="button-link">Scales and Arpeggios</a>
+                    <img src="/static/images/scales_arpeggios.jpg" alt="Guitar scales and arpeggios">
+                </div>
+                <div class="section">
+                    <a href="/chord_progression" class="button-link">Chord Practice</a>
+                    <img src="/static/images/chord_practice.jpg" alt="Chord Practice">
+                </div>
+                <div class="section">
+                    <a href="/tutorial" class="button-link">Tutorial</a>
+                    <img src="/static/images/Tutorial.jpg" alt="Guitar tutorial">
+                </div>
             </div>
-            <div class="section">
-                <a href="/scale_diagram" class="button-link">Scales and Arpeggios</a>
-                <img src="/static/images/scales_arpeggios.jpg" alt="Guitar scales and arpeggios">
-            </div>
-            <div class="section">
-                <a href="/chord_progression" class="button-link">Chord Practice</a>
-                <img src="/static/images/chord_practice.jpg" alt="Chord Practice">
-            </div>
-            <div class="section">
-                <a href="/tutorial" class="button-link">Tutorial</a>
-                <img src="/static/images/Tutorial.jpg" alt="Guitar tutorial">
-            </div>
+            <footer>
+                <p>© 2023 Guitar Warmup Coach | <a href="/privacy">Privacy Policy</a></p>
+            </footer>
         </div>
-        <footer>
-            <p>© 2023 Guitar Warmup Coach | <a href="/privacy">Privacy Policy</a></p>
-        </footer>
     </div>
     {% if session.get('skill_level') is none %}
     <div id="skillLevelModal" class="modal"

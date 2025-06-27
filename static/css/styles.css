@@ -322,11 +322,11 @@ select {
     9. Settings Button
     ========================= */
 .settings-btn {
-     margin-left: 20px;
-     font-weight: bold;
-     /* Optionally add an icon: */
-     /* background: url('/static/images/settings.svg') left center no-repeat; */
-     /* padding-left: 24px; */
+    margin-left: 20px;
+    /* font-weight: bold; */
+    /* Optionally add an icon: */
+    /* background: url('/static/images/settings.svg') left center no-repeat; */
+    /* padding-left: 24px; */
 }
 
 /* =========================

@@ -1,13 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Settings / Preferences</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Warmup Coach - Home</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="main-container">
         <div class="prefs-card">
-            <h1>Settings / Preferences</h1>
+            <header>
+                <h1>Settings / Preferences</h1>
+                <nav>
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/logout" class="logout-btn">Logout</a>
+                </nav>
+            </header>
 
             <h2>Change Skill Level</h2>
             <form method="post" style="margin-bottom: 24px;">
@@ -81,7 +91,6 @@
                 <div class="prefs-empty">No scale feedback yet.</div>
             {% endif %}
 
-            <a href="/" class="prefs-back">&larr; Back to Home</a>
         </div>
     </div>
 </body>
