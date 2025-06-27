@@ -1,21 +1,18 @@
 from flask import (
-    Flask, render_template, request, jsonify, redirect,
+    Flask, render_template, request, redirect,
     url_for, session, flash
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import create_engine, text
-import os
 import secrets
 import random
 from chordify import ChordLibrary, ScaleLibrary
 from datetime import timedelta
 
-# Flask App Setup
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
-app.permanent_session_lifetime = timedelta(minutes=30)  # Session expires after 30 minutes of inactivity
+app.permanent_session_lifetime = timedelta(minutes=30)
 
-# Database Setup
 DATABASE_URI = 'sqlite:///users.db'
 engine = create_engine(DATABASE_URI)
 
@@ -30,22 +27,19 @@ with engine.connect() as conn:
         conn.execute(text('ALTER TABLE users ADD COLUMN skill_level TEXT'))
     except Exception:
         pass
-    conn.commit()
     try:
         conn.execute(text('ALTER TABLE feedback ADD COLUMN variation_index INTEGER'))
     except Exception:
         pass
     conn.commit()
 
-# Chordify Libraries
 chord_library = ChordLibrary()
 scale_library = ScaleLibrary()
 
-# ----------------- Authentication Routes -----------------
+#Signup and Login Routes
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    """Handle user signup."""
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -65,7 +59,6 @@ def signup():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Handle user login."""
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -75,10 +68,10 @@ def login():
                 {'username': username}
             ).fetchone()
             if user and check_password_hash(user.password_hash, password):
-                session.permanent = True  # <-- Add this line
+                session.permanent = True
                 session['user_id'] = user.id
                 session['username'] = user.username
-                session['skill_level'] = user['skill_level'] if 'skill_level' in user else None
+                session['skill_level'] = user.skill_level if getattr(user, 'skill_level', None) else None
                 flash('Login successful!', 'success')
                 return redirect(url_for('index'))
             else:
@@ -87,26 +80,20 @@ def login():
 
 @app.route('/logout')
 def logout():
-    """Log the user out and clear the session."""
     session.clear()
     flash('You have been logged out', 'success')
     return redirect(url_for('login'))
 
-# ----------------- Functional Requirements -----------------
+# Functional Requirements
 
 @app.route('/')
 def index():
-    """Show the index page if logged in, otherwise redirect to login."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
     return render_template('index.html')
 
 @app.route('/scale_diagram', methods=['GET'])
 def scale_diagram():
-    """
-    Show a random scale diagram, up to a maximum number, weighted by feedback.
-    Scales with lower (worse) feedback ratings are more likely to be selected.
-    """
     if 'user_id' not in session:
         return redirect(url_for('login'))
     try:
@@ -146,7 +133,6 @@ def scale_diagram():
 
 @app.route('/chord_progression', methods=['GET', 'POST'])
 def chord_progression():
-    """Handle chord progression and single chord exercises."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
@@ -214,9 +200,11 @@ def chord_progression():
         chord_name = random.choice(all_chords)
         chord_data = chord_library.chord_positions.get(chord_name)
         if chord_data is None:
-            # Fallback: use a default chord, or handle gracefully
             chord_data = chord_library.chord_positions[next(iter(chord_library.chord_positions))]
             flash(f"Chord '{chord_name}' not found. Showing a default chord.", "warning")
+        # FIX: Select the first variation if chord_data is a list
+        if isinstance(chord_data, list):
+            chord_data = chord_data[0]
         chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], chord_name)
         return render_template(
             'chord_progression.html',
@@ -247,7 +235,6 @@ def chord_progression():
 
 @app.route('/daily_exercise', methods=['GET'])
 def daily_exercise():
-    """Serve daily exercise: either a chord or a scale."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
     chord_count = int(request.args.get('chord_count', 0))
@@ -307,7 +294,6 @@ def daily_exercise():
 
 @app.route('/tutorial')
 def tutorial():
-    """Show tutorial examples."""
     chord_name = "A"
     chord_data = chord_library.get_chord(chord_name)
     chord_svg = chord_library.draw_chord(chord_data["positions"], chord_data["fingers"], chord_name)
@@ -321,7 +307,6 @@ def tutorial():
 
 @app.route('/set_skill_level', methods=['POST'])
 def set_skill_level():
-    """Set the user's skill level."""
     if 'user_id' not in session:
         return '', 401
     level = request.json.get('level')
@@ -334,11 +319,10 @@ def set_skill_level():
     session['skill_level'] = level
     return '', 204
 
-# ----------------- Feedback Route -----------------
+# Feedback Submission
 
 @app.route('/submit_feedback', methods=['POST'])
 def submit_feedback():
-    """Handle feedback submission."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
     rating = int(request.form['rating'])
@@ -380,8 +364,6 @@ def submit_feedback():
         elif exercise_type == 'scale':
             scale_count += 1
         return redirect(url_for('daily_exercise', chord_count=chord_count, scale_count=scale_count))
-
-# ----------------- Helper Functions -----------------
 
 def get_scale_ratings(scale_name, scale_key=None):
     with engine.connect() as conn:
@@ -427,7 +409,7 @@ def pick_weighted_chord_variation(skill_level):
         avg_rating = sum(ratings) / len(ratings) if ratings else 5
         weights.append(max(11 - avg_rating, 1))
     chosen = random.choices(available, weights=weights, k=1)[0]
-    return chosen  # (chord_name, variation_index, label)
+    return chosen
 
 def get_chord_variation_ratings(chord_name, variation_index):
     with engine.connect() as conn:
@@ -437,11 +419,10 @@ def get_chord_variation_ratings(chord_name, variation_index):
         )
         return [row.rating for row in result.fetchall()]
 
-# ----------------- Other Routes -----------------
+# Other Routes
 
 @app.route('/about')
 def about():
-    # Example: Show Minor Pentatonic scale in A
     scale_name = "Minor Pentatonic"
     scale_key = "A"
     scale_positions = scale_library.get_scale_positions(scale_name, scale_key)
@@ -453,7 +434,6 @@ def preferences():
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
-    # Handle skill level change
     if request.method == 'POST' and 'skill_level' in request.form:
         new_level = request.form['skill_level']
         with engine.connect() as conn:
@@ -466,7 +446,6 @@ def preferences():
         flash('Skill level updated!', 'success')
         return redirect(url_for('preferences'))
 
-    # Handle delete all feedback for a pattern/shape
     if request.method == 'POST' and 'delete_pattern' in request.form:
         pattern_type = request.form['pattern_type']
         if pattern_type == 'single_chord':
@@ -490,9 +469,7 @@ def preferences():
         flash('All feedback for this pattern deleted.', 'success')
         return redirect(url_for('preferences'))
 
-    # Fetch and group feedback for chords and scales
     with engine.connect() as conn:
-        # Chord feedback grouped by chord_name and variation_index
         chord_feedback = conn.execute(
             text("""
                 SELECT chord_name, variation_index, AVG(rating) as avg_rating, COUNT(*) as count
@@ -503,7 +480,6 @@ def preferences():
             {'user_id': session['user_id']}
         ).fetchall()
 
-        # Scale feedback grouped by scale_name and scale_key
         scale_feedback = conn.execute(
             text("""
                 SELECT scale_name, scale_key, AVG(rating) as avg_rating, COUNT(*) as count
@@ -521,13 +497,6 @@ def preferences():
         scale_feedback=scale_feedback,
         skill_level=skill_level
     )
-
-# ----------------- Main -----------------
-
-# Uncomment to clear feedback table
-# with engine.connect() as conn:
-#     conn.execute(text("DELETE FROM feedback"))
-#     conn.commit()
 
 if __name__ == '__main__':
     app.run(debug=True)
