@@ -87,26 +87,45 @@ class ChordLibrary:
     def draw_chord(self, frets, fingers, chord_name="", barre=None):
         top_margin = 20
         svg = [
-            '<svg width="200" height="250" xmlns="http://www.w3.org/2000/svg">',
+            '<svg width="200" height="270" xmlns="http://www.w3.org/2000/svg">',
             f'<text x="115" y="{top_margin}" text-anchor="middle" font-size="20" font-weight="bold" fill="black">{chord_name}</text>',
         ]
+
+        # --- Calculate fret range to display ---
+        min_fret = min([f for f in frets if f > 0], default=1)
+        max_fret = max([f for f in frets if f > 0], default=4)
+        # Always show at least 4 frets
+        display_min = max(1, min_fret)
+        display_max = max(display_min + 3, max_fret)
+        num_frets = display_max - display_min + 1
+
+        # --- Draw fret numbers on the left ---
+        for fret_index in range(num_frets):
+            fret_num = display_min + fret_index
+            y = 50 + (fret_index * 40) + top_margin + 8
+            svg.append(f'<text x="22" y="{y}" text-anchor="middle" font-size="13" fill="#0ea5e9">{fret_num}</text>')
+
         # Draw strings
         for string_index in range(6):
             string_x = 40 + (string_index * 30)
             svg.append(f'<line x1="{string_x}" y1="{50+top_margin}" x2="{string_x}" y2="{210+top_margin}" stroke="black" stroke-width="2"/>')
         
         # Draw frets
-        for fret_index in range(5):
+        for fret_index in range(num_frets):
             fret_y = 50 + (fret_index * 40) + top_margin
             svg.append(f'<line x1="40" y1="{fret_y}" x2="190" y2="{fret_y}" stroke="black" stroke-width="3"/>')
+        # Top nut (already present)
         svg.append(f'<line x1="39" y1="{50+top_margin}" x2="191" y2="{50+top_margin}" stroke="black" stroke-width="5"/>')
-        
+        # --- Add this for the bottom line ---
+        bottom_y = 50 + (num_frets * 40) + top_margin
+        svg.append(f'<line x1="40" y1="{bottom_y}" x2="190" y2="{bottom_y}" stroke="black" stroke-width="3"/>')
+
         # Draw barre if present
         if barre:
             fret = barre["fret"]
             from_x = 40 + (barre["from_string"] * 30)
             to_x = 40 + (barre["to_string"] * 30)
-            y = 50 + ((fret - 1) * 40) + 20 + top_margin
+            y = 50 + ((fret - display_min) * 40) + 20 + top_margin
             svg.append(f'<rect x="{from_x-7}" y="{y-8}" width="{to_x-from_x+14}" height="16" rx="8" fill="#222" opacity="0.7"/>')
 
         # Open/muted strings
@@ -116,17 +135,17 @@ class ChordLibrary:
                 svg.append(f'<text x="{string_x}" y="{40+top_margin}" text-anchor="middle" font-size="12" fill="black">O</text>')
             elif fret == -1:
                 svg.append(f'<text x="{string_x}" y="{40+top_margin}" text-anchor="middle" font-size="12" fill="black">X</text>')
-        
-        # Finger positions
+
+        # Finger positions (dots and finger numbers inside)
         for string_index, fret in enumerate(frets):
             string_x = 40 + (string_index * 30)
             if fret > 0:
-                fret_y = 50 + ((fret - 1) * 40) + 20 + top_margin
+                fret_y = 50 + ((fret - display_min) * 40) + 20 + top_margin
                 svg.append(f'<circle cx="{string_x}" cy="{fret_y}" r="10" fill="black"/>')
                 finger = fingers[string_index]
                 if finger > 0:
                     svg.append(f'<text x="{string_x}" y="{fret_y + 4}" text-anchor="middle" font-size="10" fill="white">{finger}</text>')
-        
+    
         svg.append('</svg>')
         return "\n".join(svg)
 
@@ -223,7 +242,6 @@ class ScaleLibrary:
             }
         }
 
-    
     def get_scale_positions(self, pattern_name, key, root_string=0):
         """
         Generate scale positions for a given pattern and key.
