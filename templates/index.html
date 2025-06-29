@@ -50,31 +50,10 @@
             <button onclick="setSkillLevel('expert')" class="btn-main">Expert</button>
         </div>
         </div>
-        <script>
-            function setSkillLevel(level) {
-                fetch('/set_skill_level', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({level: level})
-                }).then(() => location.reload());
-            }
-        </script>
         {% endif %}
-        <script>
-            function toggleDropdown(event) {
-                event.preventDefault();
-                var dropdown = document.getElementById('accountDropdown');
-                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-            }
-            // Optional: close dropdown when clicking outside
-            window.onclick = function(event) {
-            if (!event.target.matches('.dropbtn')) {
-                var dropdown = document.getElementById('accountDropdown');
-                if (dropdown && dropdown.style.display === 'block') {
-                dropdown.style.display = 'none';
-                }
-            }
-            }
-        </script>
+        {% if session.get('skill_level') is none %}
+        <script src="{{ url_for('static', filename='js/skill_level.js') }}"></script>
+        {% endif %}
+        <script src="{{ url_for('static', filename='js/dropdown.js') }}"></script>
     </body>
 </html>
