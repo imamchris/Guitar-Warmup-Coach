@@ -1,80 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guitar Warmup Coach - Home</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
-    
-</head>
-<body>
-    <div class="main-container">
-        <header>
-            <h1>Guitar Warmup Coach</h1>
-            <nav>
-                <a href="/about">About</a>
-                <a href="/preferences">Settings</a>
-                <a href="/logout" class="logout-btn">Logout</a>
-            </nav>
-        </header>
-        <div class="section-list">
-            <div class="section">
-                <a href="/daily_exercise" class="button-link">Daily Exercise</a>
-                <img src="/static/images/daily_exercise.jpg" alt="A guitar exercise routine">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Guitar Warmup Coach - Home</title>
+        <link rel="stylesheet" href="/static/css/styles.css">
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">  
+    </head>
+
+    <body>
+        <div class="main-container">
+            <header>
+                <h1>Guitar Warmup Coach</h1>
+                <nav>
+                    <a href="/about">About</a>
+                    <a href="/preferences">Settings</a>
+                    <a href="/logout" class="logout-btn">Logout</a>
+                </nav>
+            </header>
+            <div class="section-list">
+                <div class="section">
+                    <a href="/daily_exercise" class="button-link">Daily Exercise</a>
+                    <img src="/static/images/daily_exercise.jpg" alt="A guitar exercise routine">
+                </div>
+                <div class="section">
+                    <a href="/scale_diagram" class="button-link">Scales and Arpeggios</a>
+                    <img src="/static/images/scales_arpeggios.jpg" alt="Guitar scales and arpeggios">
+                </div>
+                <div class="section">
+                    <a href="/chord_progression" class="button-link">Chord Practice</a>
+                    <img src="/static/images/chord_practice.jpg" alt="Chord Practice">
+                </div>
+                <div class="section">
+                    <a href="/tutorial" class="button-link">Tutorial</a>
+                    <img src="/static/images/Tutorial.jpg" alt="Guitar tutorial">
+                </div>
             </div>
-            <div class="section">
-                <a href="/scale_diagram" class="button-link">Scales and Arpeggios</a>
-                <img src="/static/images/scales_arpeggios.jpg" alt="Guitar scales and arpeggios">
-            </div>
-            <div class="section">
-                <a href="/chord_progression" class="button-link">Chord Practice</a>
-                <img src="/static/images/chord_practice.jpg" alt="Chord Practice">
-            </div>
-            <div class="section">
-                <a href="/tutorial" class="button-link">Tutorial</a>
-                <img src="/static/images/Tutorial.jpg" alt="Guitar tutorial">
-            </div>
+            <footer>
+                <p>© 2025 Guitar Warmup Coach | <a href="/privacy">Privacy Policy</a></p>
+            </footer>
         </div>
-        <footer>
-            <p>© 2023 Guitar Warmup Coach | <a href="/privacy">Privacy Policy</a></p>
-        </footer>
-    </div>
-    {% if session.get('skill_level') is none %}
-    <div id="skillLevelModal" class="modal"
-         style="display:flex; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:1000; align-items:center; justify-content:center;">
-      <div style="background:#fff; border-radius:16px; padding:30px 24px; max-width:340px; box-shadow:0 4px 32px rgba(0,0,0,0.18); text-align:center;">
-        <h2>Select Your Skill Level</h2>
-        <button onclick="setSkillLevel('beginner')" class="btn-main">Beginner</button>
-        <button onclick="setSkillLevel('intermediate')" class="btn-main">Intermediate</button>
-        <button onclick="setSkillLevel('expert')" class="btn-main">Expert</button>
-      </div>
-    </div>
-    <script>
-        function setSkillLevel(level) {
-            fetch('/set_skill_level', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({level: level})
-            }).then(() => location.reload());
-        }
-    </script>
-    {% endif %}
-    <script>
-function toggleDropdown(event) {
-    event.preventDefault();
-    var dropdown = document.getElementById('accountDropdown');
-    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-}
-// Optional: close dropdown when clicking outside
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    var dropdown = document.getElementById('accountDropdown');
-    if (dropdown && dropdown.style.display === 'block') {
-      dropdown.style.display = 'none';
-    }
-  }
-}
-</script>
-</body>
+        {% if session.get('skill_level') is none %}
+        <div id="skillLevelModal" class="modal"
+            style="display:flex; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:16px; padding:30px 24px; max-width:340px; box-shadow:0 4px 32px rgba(0,0,0,0.18); text-align:center;">
+            <h2>Select Your Skill Level</h2>
+            <button onclick="setSkillLevel('beginner')" class="btn-main">Beginner</button>
+            <button onclick="setSkillLevel('intermediate')" class="btn-main">Intermediate</button>
+            <button onclick="setSkillLevel('expert')" class="btn-main">Expert</button>
+        </div>
+        </div>
+        <script>
+            function setSkillLevel(level) {
+                fetch('/set_skill_level', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({level: level})
+                }).then(() => location.reload());
+            }
+        </script>
+        {% endif %}
+        <script>
+            function toggleDropdown(event) {
+                event.preventDefault();
+                var dropdown = document.getElementById('accountDropdown');
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            }
+            // Optional: close dropdown when clicking outside
+            window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdown = document.getElementById('accountDropdown');
+                if (dropdown && dropdown.style.display === 'block') {
+                dropdown.style.display = 'none';
+                }
+            }
+            }
+        </script>
+    </body>
 </html>

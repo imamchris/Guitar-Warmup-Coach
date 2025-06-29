@@ -36,7 +36,7 @@ with engine.connect() as conn:
 chord_library = ChordLibrary()
 scale_library = ScaleLibrary()
 
-#Signup and Login Routes
+# Signup and Login Routes
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -417,7 +417,7 @@ def get_chord_variation_ratings(chord_name, variation_index):
             text("SELECT rating FROM feedback WHERE exercise_type='single_chord' AND chord_name=:chord_name AND variation_index=:variation_index"),
             {'chord_name': chord_name, 'variation_index': variation_index}
         )
-        return [row.rating for row in result.fetchall()]
+    return [row.rating for row in result.fetchall()]
 
 # Other Routes
 
@@ -467,8 +467,7 @@ def preferences():
                 )
                 conn.commit()
         flash('All feedback for this pattern deleted.', 'success')
-        return redirect(url_for('preferences'))
-
+        
     with engine.connect() as conn:
         chord_feedback = conn.execute(
             text("""
@@ -497,6 +496,10 @@ def preferences():
         scale_feedback=scale_feedback,
         skill_level=skill_level
     )
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
