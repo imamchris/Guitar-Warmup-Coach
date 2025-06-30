@@ -1,7 +1,7 @@
 <!DOCTYPE>
 <html>
 
-<img src = https://github.com/user-attachments/assets/2a4e479b-2a7c-4f1f-8150-232529a428f4 alt=image style= "margin-left: 300px;">
+<img src = "https://github.com/user-attachments/assets/2a4e479b-2a7c-4f1f-8150-232529a428f4" alt=image style= "position: relative; width:600px; position: absolute; top: 50px; right: 20px;">
 
 <h1>Guitar Warmup Coach</h1>
 
