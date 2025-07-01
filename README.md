@@ -83,7 +83,7 @@
   <div class="section">
     <h2>Documentation</h2>
     <p>
-      <a href="LINK_TO_YOUR_DOC.docx" target="_blank">Download the full documentation (.docx)</a>
+      <a href="12SEN3 Programming Project Documentation Christopher Pereira.docx" target="_blank">Download the full documentation (.docx)</a>
     </p>
   </div>
 
